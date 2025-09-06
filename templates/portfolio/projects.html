@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Projects - Sartaj Ahamad{% endblock %}
+
+{% block content %}
+<section class="projects-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4">My Projects</h1>
+            <p class="lead">A showcase of my work and technical capabilities</p>
+        </div>
+        
+        <div class="row">
+            {% for project in projects %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card project-card h-100">
+                    {% if project.image %}
+                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-code fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.description }}</p>
+                        
+                        <div class="technologies mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-tags"></i> {{ project.technologies }}
+                            </small>
+                        </div>
+                        
+                        {% if project.is_featured %}
+                        <span class="badge bg-primary mb-2">
+                            <i class="fas fa-star"></i> Featured
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-footer bg-transparent">
+                        <div class="d-flex justify-content-between">
+                            {% if project.github_link %}
+                            <a href="{{ project.github_link }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                            {% endif %}
+                            
+                            {% if project.live_link %}
+                            <a href="{{ project.live_link }}" class="btn btn-primary btn-sm" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </a>
+                            {% endif %}
+                        </div>
+                        
+                        <small class="text-muted d-block mt-2">
+                            <i class="fas fa-calendar"></i> {{ project.created_date|date:"F Y" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 
+                    No projects available at the moment. Check back soon!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

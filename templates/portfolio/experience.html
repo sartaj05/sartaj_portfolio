@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Experience - Sartaj Ahamad{% endblock %}
+
+{% block content %}
+<section class="experience-section py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4">Professional Experience</h1>
+            <p class="lead">My career journey and professional growth</p>
+        </div>
+        
+        <div class="timeline">
+            {% for experience in experiences %}
+            <div class="timeline-item mb-5">
+                <div class="row">
+                    <div class="col-md-3 text-md-end">
+                        <div class="timeline-date">
+                            <span class="badge bg-primary">{{ experience.duration }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-9">
+                        <div class="card experience-card">
+                            <div class="card-body">
+                                <h4 class="card-title text-primary">{{ experience.position }}</h4>
+                                <h6 class="text-muted mb-2">{{ experience.company }}</h6>
+                                
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-map-marker-alt"></i> {{ experience.location }}
+                                    </small>
+                                </div>
+                                
+                                <p class="card-text">{{ experience.description }}</p>
+                                
+                                <div class="technologies">
+                                    <h6 class="text-primary">Technologies Used:</h6>
+                                    <p class="text-muted">{{ experience.technologies }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-center">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 
+                    Experience information will be updated soon.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Training Section -->
+        <div class="training-section mt-5">
+            <h2 class="text-center mb-4">Training & Development</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">
+                                <i class="fas fa-graduation-cap"></i> 
+                                Python Full Stack Development
+                            </h5>
+                            <h6 class="text-muted">Q-Spider</h6>
+                            <p class="mb-2">
+                                <i class="fas fa-calendar"></i> March 2024 – September 2024
+                            </p>
+                            <p class="card-text">
+                                Gained hands-on experience in Python, HTML, SQL, JavaScript for 
+                                end-to-end web development. Participated in regular mock interviews 
+                                and coding sessions to improve technical and communication skills.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.timeline {
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 25%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: calc(25% - 6px);
+    top: 30px;
+    width: 12px;
+    height: 12px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px #dee2e6;
+}
+
+@media (max-width: 768px) {
+    .timeline::before,
+    .timeline-item::before {
+        display: none;
+    }
+    
+    .timeline-date {
+        margin-bottom: 15px;
+    }
+}
+</style>
+{% endblock %}
