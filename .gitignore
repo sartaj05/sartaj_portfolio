@@ -3,3 +3,33 @@ portfolio_env
 sartaj_portfolio/__pycache__
 portfolio/migrations
 portfolio/__pycache__
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Virtual Environment
+portfolio_env/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Static files
+staticfiles/
+
+# Environment variables
+.env
