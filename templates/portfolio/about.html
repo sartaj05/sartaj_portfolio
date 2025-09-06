@@ -29,15 +29,13 @@
             
             <div class="col-lg-8">
                 <h2 class="mb-4">About Me</h2>
-                <p class="lead">
                 <p class="lead mb-4">
-    A dedicated Software Developer with 1 year of experience in building robust backend 
-    applications using Python and Django (including Django REST Framework). Recently, I have 
-    been working with FastAPI for the past 2 months, expanding my skills in developing modern 
-    and efficient APIs. Passionate about creating scalable solutions and contributing to 
-    innovative projects.
-</p>
-
+                    A dedicated Software Developer with 1 year of experience in building robust backend 
+                    applications using Python and Django (including Django REST Framework). Recently, I have 
+                    been working with FastAPI for the past 2 months, expanding my skills in developing modern 
+                    and efficient APIs. Passionate about creating scalable solutions and contributing to 
+                    innovative projects.
+                </p>
                 
                 <p>
                     My journey in software development began during my BTech in Information Technology at 
@@ -109,10 +107,14 @@
                         <div class="skill-item mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>{{ skill.name }}</span>
-                                <span class="text-muted">{{ skill.proficiency }}%</span>
+                                <span class="text-muted skill-value">{{ skill.proficiency }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width: {{ skill.proficiency }}%"></div>
+                                <div class="progress-bar bg-primary" 
+                                     role="progressbar" 
+                                     aria-valuemin="0" aria-valuemax="100"
+                                     data-value="{{ skill.proficiency }}">
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -123,4 +125,25 @@
         </div>
     </div>
 </section>
+
+<!-- JavaScript to reduce percentage -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".progress-bar").forEach(function (bar) {
+        let originalValue = parseInt(bar.getAttribute("data-value"));
+        // Decrease by random 5–10
+        let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+        let newValue = Math.max(0, originalValue - decrease);
+
+        // Update width
+        bar.style.width = newValue + "%";
+        bar.setAttribute("aria-valuenow", newValue);
+
+        // Update text
+        let valueText = bar.closest(".skill-item").querySelector(".skill-value");
+        if (valueText) valueText.textContent = newValue + "%";
+    });
+});
+</script>
+
 {% endblock %}
