@@ -1,0 +1,5 @@
+venv
+portfolio_env
+sartaj_portfolio/__pycache__
+portfolio/migrations
+portfolio/__pycache__
