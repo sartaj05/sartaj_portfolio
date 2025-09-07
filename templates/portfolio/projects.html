@@ -4,72 +4,284 @@
 {% block title %}Projects - Sartaj Ahamad{% endblock %}
 
 {% block content %}
-<section class="projects-section" style="padding-top: 100px; padding-bottom: 60px;">
+<section class="projects-section position-relative" style="padding-top: 120px; padding-bottom: 60px;">
     <div class="container">
-        <div class="text-center mb-5">
-            <h1 class="display-4">My Projects</h1>
-            <p class="lead">A showcase of my work and technical capabilities</p>
+        <div class="text-center mb-5 fade-in-up">
+            <h1 class="display-4 fw-bold gradient-text">My Projects</h1>
+            <p class="lead text-muted">A showcase of my work and technical capabilities</p>
+            
+            <!-- Stats Row -->
+            <div class="row justify-content-center mt-4">
+                <div class="col-auto">
+                    <div class="glass p-3 rounded-3 mx-2">
+                        <h4 class="gradient-text fw-bold mb-0">{{ projects.count }}+</h4>
+                        <small class="text-muted">Projects</small>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="glass p-3 rounded-3 mx-2">
+                        <h4 class="gradient-text fw-bold mb-0">5+</h4>
+                        <small class="text-muted">Technologies</small>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="glass p-3 rounded-3 mx-2">
+                        <h4 class="gradient-text fw-bold mb-0">100%</h4>
+                        <small class="text-muted">Passion</small>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <div class="row">
             {% for project in projects %}
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card project-card h-100">
-                    {% if project.image %}
-                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
-                    {% else %}
-                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fas fa-code fa-3x text-muted"></i>
+                <div class="card project-card h-100 glass fade-in-scale" style="transition: all 0.3s ease;">
+                    <!-- Project Image -->
+                    <div class="position-relative overflow-hidden" style="height: 200px;">
+                        {% if project.image %}
+                        <img src="{{ project.image.url }}" class="card-img-top h-100 w-100" 
+                             style="object-fit: cover; transition: transform 0.5s ease;" 
+                             alt="{{ project.title }}">
+                        {% else %}
+                        <div class="card-img-top h-100 w-100 d-flex align-items-center justify-content-center" 
+                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fas fa-code fa-3x text-white"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Featured Badge -->
+                        {% if project.is_featured %}
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge glass">
+                                <i class="fas fa-star gradient-text"></i> Featured
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Hover Overlay -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+                             style="background: rgba(0,0,0,0.8); opacity: 0; transition: opacity 0.3s ease;">
+                            <div class="text-center">
+                                {% if project.github_link %}
+                                <a href="{{ project.github_link }}" class="btn btn-outline-light btn-sm me-2" target="_blank">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                {% endif %}
+                                {% if project.live_link %}
+                                <a href="{{ project.live_link }}" class="btn btn-primary btn-sm" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-                    {% endif %}
                     
                     <div class="card-body">
-                        <h5 class="card-title">{{ project.title }}</h5>
+                        <h5 class="card-title gradient-text fw-bold">{{ project.title }}</h5>
                         <p class="card-text">{{ project.description }}</p>
                         
+                        <!-- Technology Tags -->
                         <div class="technologies mb-3">
                             <small class="text-muted">
-                                <i class="fas fa-tags"></i> {{ project.technologies }}
+                                <i class="fas fa-tags gradient-text"></i> 
+                                <span class="ms-1">{{ project.technologies }}</span>
                             </small>
                         </div>
-                        
-                        {% if project.is_featured %}
-                        <span class="badge bg-primary mb-2">
-                            <i class="fas fa-star"></i> Featured
-                        </span>
-                        {% endif %}
                     </div>
                     
-                    <div class="card-footer bg-transparent">
-                        <div class="d-flex justify-content-between">
-                            {% if project.github_link %}
-                            <a href="{{ project.github_link }}" class="btn btn-outline-primary btn-sm" target="_blank">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            {% endif %}
-                            
-                            {% if project.live_link %}
-                            <a href="{{ project.live_link }}" class="btn btn-primary btn-sm" target="_blank">
-                                <i class="fas fa-external-link-alt"></i> Live Demo
-                            </a>
-                            {% endif %}
+                    <div class="card-footer bg-transparent border-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="project-links">
+                                {% if project.github_link %}
+                                <a href="{{ project.github_link }}" class="btn btn-outline-primary btn-sm me-2" target="_blank">
+                                    <i class="fab fa-github"></i> Code
+                                </a>
+                                {% endif %}
+                                
+                                {% if project.live_link %}
+                                <a href="{{ project.live_link }}" class="btn btn-primary btn-sm" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Live
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
                         
                         <small class="text-muted d-block mt-2">
-                            <i class="fas fa-calendar"></i> {{ project.created_date|date:"F Y" }}
+                            <i class="fas fa-calendar gradient-text"></i> 
+                            <span class="ms-1">{{ project.created_date|date:"F Y" }}</span>
                         </small>
                     </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12 text-center">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i> 
-                    No projects available at the moment. Check back soon!
+                <div class="glass p-5 rounded-4">
+                    <i class="fas fa-folder-open fa-4x gradient-text mb-3"></i>
+                    <h3 class="gradient-text">No Projects Yet</h3>
+                    <p class="text-muted mb-0">Projects will be showcased here soon. Check back later!</p>
                 </div>
             </div>
             {% endfor %}
         </div>
+
+        <!-- Call to Action -->
+        {% if projects %}
+        <div class="text-center mt-5 fade-in-up">
+            <div class="glass p-4 rounded-4 d-inline-block">
+                <h4 class="gradient-text mb-3">Interested in Working Together?</h4>
+                <p class="text-muted mb-3">Let's discuss your next project</p>
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-envelope"></i> Get In Touch
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>
+
+<!-- Technology Filter Section (Optional Enhancement) -->
+<section class="tech-filter py-3 position-relative" style="background: rgba(255,255,255,0.05);">
+    <div class="container">
+        <div class="text-center">
+            <h6 class="gradient-text mb-3">Technologies I Work With</h6>
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <span class="badge glass px-3 py-2">Python</span>
+                <span class="badge glass px-3 py-2">Django</span>
+                <span class="badge glass px-3 py-2">FastAPI</span>
+                <span class="badge glass px-3 py-2">JavaScript</span>
+                <span class="badge glass px-3 py-2">HTML/CSS</span>
+                <span class="badge glass px-3 py-2">PostgreSQL</span>
+                <span class="badge glass px-3 py-2">Git</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.project-card {
+    transform-style: preserve-3d;
+    cursor: pointer;
+}
+
+.project-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.project-card:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+.project-card:hover .position-absolute {
+    opacity: 1 !important;
+}
+
+.technologies .badge {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.project-links .btn {
+    transition: all 0.3s ease;
+}
+
+.project-links .btn:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes projectFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+.project-card.floating {
+    animation: projectFloat 4s ease-in-out infinite;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // GSAP animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Stagger animation for project cards
+    gsap.fromTo(".project-card", 
+        { y: 50, opacity: 0, rotateX: 45 },
+        {
+            y: 0,
+            opacity: 1,
+            rotateX: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+                trigger: ".projects-section",
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+            }
+        }
+    );
+
+    // Enhanced hover effects for project cards
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            gsap.to(card, { 
+                y: -15, 
+                rotateX: 5,
+                rotateY: 2,
+                duration: 0.3, 
+                ease: "power2.out" 
+            });
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            gsap.to(card, { 
+                y: 0, 
+                rotateX: 0,
+                rotateY: 0,
+                duration: 0.3, 
+                ease: "power2.out" 
+            });
+        });
+    });
+
+    // Parallax effect for technology badges
+    gsap.to(".tech-filter .badge", {
+        y: -10,
+        duration: 2,
+        ease: "power1.inOut",
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.2
+    });
+
+    // Image zoom effect on hover
+    document.querySelectorAll('.card-img-top').forEach(img => {
+        img.addEventListener('mouseenter', () => {
+            gsap.to(img, { scale: 1.1, duration: 0.5, ease: "power2.out" });
+        });
+        
+        img.addEventListener('mouseleave', () => {
+            gsap.to(img, { scale: 1, duration: 0.5, ease: "power2.out" });
+        });
+    });
+
+    // Dynamic project loading animation (if you add more projects later)
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('floating');
+            }
+        });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.project-card').forEach(card => {
+        observer.observe(card);
+    });
+});
+</script>
+
 {% endblock %}

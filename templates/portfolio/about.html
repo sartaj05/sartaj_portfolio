@@ -4,74 +4,115 @@
 {% block title %}About - Sartaj Ahamad{% endblock %}
 
 {% block content %}
-<section class="about-section" style="padding-top: 120px; padding-bottom: 60px;">
+<section class="about-section position-relative" style="padding-top: 120px; padding-bottom: 60px;">
     <div class="container">
         <div class="row">
             <div class="col-lg-4 mb-5">
-                <div class="text-center">
-                    <img src="{% static 'images/profile.jpg' %}" alt="Sartaj Ahamad" 
-                         class="img-fluid rounded-circle profile-img mb-4">
-                    <h3>Sartaj Ahamad</h3>
-                    <p class="text-muted">Software Developer</p>
+                <div class="text-center fade-in-scale">
+                    <div class="position-relative d-inline-block">
+                        <img src="{% static 'images/profile.jpg' %}" alt="Sartaj Ahamad" 
+                             class="img-fluid rounded-circle profile-img mb-4 floating">
+                        <!-- Social orbit animation -->
+                        <div class="position-absolute top-0 start-0 w-100 h-100">
+                            <div class="position-absolute" style="top: 10%; right: -10%; animation: orbit 8s linear infinite;">
+                                <div class="glass p-2 rounded-circle">
+                                    <i class="fab fa-github text-light"></i>
+                                </div>
+                            </div>
+                            <div class="position-absolute" style="bottom: 10%; left: -10%; animation: orbit 10s linear infinite reverse;">
+                                <div class="glass p-2 rounded-circle">
+                                    <i class="fab fa-linkedin text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="gradient-text fw-bold">Sartaj Ahamad</h3>
+                    <p class="text-muted mb-4">Software Developer</p>
                     <div class="social-links">
-                        <a href="mailto:sartaj.ahamad0502@gmail.com" class="btn btn-outline-primary btn-sm me-2">
-                            <i class="fas fa-envelope"></i>
+                        <a href="mailto:sartaj.ahamad0502@gmail.com" class="btn glass me-2 mb-2">
+                            <i class="fas fa-envelope gradient-text"></i>
                         </a>
-                        <a href="https://github.com/sartaj05" class="btn btn-outline-primary btn-sm me-2" target="_blank">
-                            <i class="fab fa-github"></i>
+                        <a href="https://github.com/sartaj05" class="btn glass me-2 mb-2" target="_blank">
+                            <i class="fab fa-github gradient-text"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/sartaj-ahamad-243234215/" class="text-white me-3" target="_blank">
-    <i class="fab fa-linkedin fa-lg"></i>
-</a>
-
+                        <a href="https://www.linkedin.com/in/sartaj-ahamad-243234215/" class="btn glass me-2 mb-2" target="_blank">
+                            <i class="fab fa-linkedin gradient-text"></i>
+                        </a>
                     </div>
                 </div>
             </div>
             
             <div class="col-lg-8">
-                <h2 class="mb-4">About Me</h2>
-                <p class="lead mb-4">
-                    A dedicated Software Developer with 1 year of experience in building robust backend 
-                    applications using Python and Django (including Django REST Framework). Recently, I have 
-                    been working with FastAPI for the past 2 months, expanding my skills in developing modern 
-                    and efficient APIs. Passionate about creating scalable solutions and contributing to 
-                    innovative projects.
-                </p>
-                
-                <p>
-                    My journey in software development began during my BTech in Information Technology at 
-                    Chaudhary Charan Singh University, Meerut. I have developed strong skills in creating 
-                    scalable REST APIs, leveraging caching systems for performance optimization, and 
-                    writing test-driven, maintainable code using Pytest and SonarQube.
-                </p>
-                
-                <p>
-                    Currently working as a Jr. Software Engineer at Createch Software Pvt. Ltd. for the 
-                    Ministry of Defence (ASDC), I am involved in developing enterprise-level solutions 
-                    using cutting-edge technologies. I am passionate about contributing to innovative 
-                    solutions in web development and AI/ML domains while continuously growing in dynamic 
-                    environments.
-                </p>
+                <div class="fade-in-up">
+                    <h2 class="mb-4 gradient-text display-6 fw-bold">About Me</h2>
+                    <div class="glass p-4 mb-4 rounded-4">
+                        <p class="lead mb-4" style="line-height: 1.7;">
+                            A dedicated Software Developer with 1 year of experience in building robust backend 
+                            applications using Python and Django (including Django REST Framework). Recently, I have 
+                            been working with FastAPI for the past 2 months, expanding my skills in developing modern 
+                            and efficient APIs. Passionate about creating scalable solutions and contributing to 
+                            innovative projects.
+                        </p>
+                    </div>
+                    
+                    <div class="glass p-4 mb-4 rounded-4">
+                        <p style="line-height: 1.7;">
+                            My journey in software development began during my BTech in Information Technology at 
+                            Chaudhary Charan Singh University, Meerut. I have developed strong skills in creating 
+                            scalable REST APIs, leveraging caching systems for performance optimization, and 
+                            writing test-driven, maintainable code using Pytest and SonarQube.
+                        </p>
+                    </div>
+                    
+                    <div class="glass p-4 mb-5 rounded-4">
+                        <p style="line-height: 1.7;">
+                            Currently working as a Jr. Software Engineer at Createch Software Pvt. Ltd. for the 
+                            Ministry of Defence (ASDC), I am involved in developing enterprise-level solutions 
+                            using cutting-edge technologies. I am passionate about contributing to innovative 
+                            solutions in web development and AI/ML domains while continuously growing in dynamic 
+                            environments.
+                        </p>
+                    </div>
+                </div>
                 
                 <div class="row mt-5">
-                    <div class="col-md-6">
-                        <h4>Education</h4>
-                        <div class="education-item">
-                            <h6 class="text-primary">BTech in Information Technology</h6>
-                            <p class="mb-1">Chaudhary Charan Singh University, Meerut (SCRIET)</p>
-                            <p class="text-muted">2020 – 2024 | CGPA: 7.45/10</p>
+                    <div class="col-md-6 mb-4">
+                        <div class="card glass h-100 fade-in-scale">
+                            <div class="card-body">
+                                <h4 class="gradient-text mb-4">
+                                    <i class="fas fa-graduation-cap"></i> Education
+                                </h4>
+                                <div class="education-item">
+                                    <h6 class="text-light fw-semibold">BTech in Information Technology</h6>
+                                    <p class="mb-1">Chaudhary Charan Singh University, Meerut (SCRIET)</p>
+                                    <p class="text-muted">
+                                        <i class="fas fa-calendar"></i> 2020 – 2024 | 
+                                        <span class="gradient-text fw-semibold">CGPA: 7.45/10</span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="col-md-6">
-                        <h4>Certifications</h4>
-                        <div class="certification-item mb-3">
-                            <h6 class="text-primary">Python Certification</h6>
-                            <p class="mb-0 text-muted">IIIT Allahabad, 2022</p>
-                        </div>
-                        <div class="certification-item">
-                            <h6 class="text-primary">Introduction to Data Analytics</h6>
-                            <p class="mb-0 text-muted">Coursera, 2023</p>
+                    <div class="col-md-6 mb-4">
+                        <div class="card glass h-100 fade-in-scale">
+                            <div class="card-body">
+                                <h4 class="gradient-text mb-4">
+                                    <i class="fas fa-certificate"></i> Certifications
+                                </h4>
+                                <div class="certification-item mb-3">
+                                    <h6 class="text-light fw-semibold">Python Certification</h6>
+                                    <p class="mb-0 text-muted">
+                                        <i class="fas fa-university"></i> IIIT Allahabad, 2022
+                                    </p>
+                                </div>
+                                <div class="certification-item">
+                                    <h6 class="text-light fw-semibold">Introduction to Data Analytics</h6>
+                                    <p class="mb-0 text-muted">
+                                        <i class="fas fa-award"></i> Coursera, 2023
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,37 +122,46 @@
 </section>
 
 <!-- Skills Section -->
-<section class="skills-section py-5 bg-light">
+<section class="skills-section py-5 position-relative">
     <div class="container">
-        <h2 class="text-center mb-5">Technical Skills</h2>
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold gradient-text">Technical Skills</h2>
+            <p class="lead text-muted">My technical expertise and proficiency levels</p>
+        </div>
         <div class="row">
             {% for category, skills in skills_by_category.items %}
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="skill-category card h-100">
+                <div class="skill-category card h-100 glass fade-in-scale">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">
+                        <h5 class="card-title text-center mb-4">
                             {% if category == 'programming' %}
-                                <i class="fas fa-code"></i> Programming Languages
+                                <i class="fas fa-code gradient-text fa-2x d-block mb-2"></i>
+                                <div class="gradient-text">Programming Languages</div>
                             {% elif category == 'web' %}
-                                <i class="fas fa-globe"></i> Web Technologies
+                                <i class="fas fa-globe gradient-text fa-2x d-block mb-2"></i>
+                                <div class="gradient-text">Web Technologies</div>
                             {% elif category == 'database' %}
-                                <i class="fas fa-database"></i> Databases
+                                <i class="fas fa-database gradient-text fa-2x d-block mb-2"></i>
+                                <div class="gradient-text">Databases</div>
                             {% elif category == 'framework' %}
-                                <i class="fas fa-layer-group"></i> Frameworks
+                                <i class="fas fa-layer-group gradient-text fa-2x d-block mb-2"></i>
+                                <div class="gradient-text">Frameworks</div>
                             {% elif category == 'tools' %}
-                                <i class="fas fa-tools"></i> Tools & Libraries
+                                <i class="fas fa-tools gradient-text fa-2x d-block mb-2"></i>
+                                <div class="gradient-text">Tools & Libraries</div>
                             {% else %}
-                                <i class="fas fa-cog"></i> Other Skills
+                                <i class="fas fa-cog gradient-text fa-2x d-block mb-2"></i>
+                                <div class="gradient-text">Other Skills</div>
                             {% endif %}
                         </h5>
                         {% for skill in skills %}
                         <div class="skill-item mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>{{ skill.name }}</span>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-medium">{{ skill.name }}</span>
                                 <span class="text-muted skill-value">{{ skill.proficiency }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar bg-primary" 
+                                <div class="progress-bar" 
                                      role="progressbar" 
                                      aria-valuemin="0" aria-valuemax="100"
                                      data-value="{{ skill.proficiency }}">
@@ -127,23 +177,156 @@
     </div>
 </section>
 
-<!-- JavaScript to reduce percentage -->
+<!-- Personal Interests Section -->
+<section class="interests-section py-5 position-relative">
+    <div class="container">
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold gradient-text">Beyond Code</h2>
+            <p class="lead text-muted">What drives me outside of development</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card glass text-center h-100 fade-in-scale">
+                            <div class="card-body">
+                                <i class="fas fa-brain gradient-text fa-3x mb-3"></i>
+                                <h5 class="gradient-text">Learning</h5>
+                                <p class="text-muted">Continuously exploring new technologies and industry trends</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card glass text-center h-100 fade-in-scale">
+                            <div class="card-body">
+                                <i class="fas fa-users gradient-text fa-3x mb-3"></i>
+                                <h5 class="gradient-text">Collaboration</h5>
+                                <p class="text-muted">Building meaningful connections in the tech community</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card glass text-center h-100 fade-in-scale">
+                            <div class="card-body">
+                                <i class="fas fa-lightbulb gradient-text fa-3x mb-3"></i>
+                                <h5 class="gradient-text">Innovation</h5>
+                                <p class="text-muted">Creating solutions that make a real-world impact</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+@keyframes orbit {
+    0% {
+        transform: rotate(0deg) translateX(50px) rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg) translateX(50px) rotate(-360deg);
+    }
+}
+
+.social-links .btn {
+    width: 50px;
+    height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.social-links .btn:hover {
+    transform: translateY(-3px) scale(1.1);
+}
+
+.education-item, .certification-item {
+    position: relative;
+    padding-left: 20px;
+}
+
+.education-item::before, .certification-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+}
+</style>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Animate skill progress bars
     document.querySelectorAll(".progress-bar").forEach(function (bar) {
         let originalValue = parseInt(bar.getAttribute("data-value"));
-        // Decrease by random 5–10
         let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
         let newValue = Math.max(0, originalValue - decrease);
-
-        // Update width
-        bar.style.width = newValue + "%";
-        bar.setAttribute("aria-valuenow", newValue);
 
         // Update text
         let valueText = bar.closest(".skill-item").querySelector(".skill-value");
         if (valueText) valueText.textContent = newValue + "%";
+        
+        // Store new value for animation
+        bar.setAttribute("data-value", newValue);
     });
+
+    // GSAP animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Stagger animation for skill categories
+    gsap.fromTo(".skill-category", 
+        { y: 50, opacity: 0, scale: 0.9 },
+        {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+                trigger: ".skills-section",
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+            }
+        }
+    );
+
+    // Interests cards animation
+    gsap.fromTo(".interests-section .card", 
+        { rotateY: 90, opacity: 0 },
+        {
+            rotateY: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: ".interests-section",
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+            }
+        }
+    );
+
+    // Profile image hover effect
+    const profileImg = document.querySelector('.profile-img');
+    if (profileImg) {
+        profileImg.addEventListener('mouseenter', () => {
+            gsap.to(profileImg, { scale: 1.1, duration: 0.3, ease: "power2.out" });
+        });
+        
+        profileImg.addEventListener('mouseleave', () => {
+            gsap.to(profileImg, { scale: 1, duration: 0.3, ease: "power2.out" });
+        });
+    }
 });
 </script>
 

@@ -3,16 +3,18 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section position-relative">
     <div class="container">
         <div class="row align-items-center min-vh-100">
             <div class="col-lg-6">
-                <div class="hero-content">
-                    <h1 class="display-4 fw-bold mb-3">
-                        Hi, I'm <span class="text-primary">Sartaj Ahamad</span>
+                <div class="hero-content fade-in-up">
+                    <h1 class="display-4 fw-bold mb-3 hero-title">
+                        Hi, I'm <span class="gradient-text">Sartaj Ahamad</span>
                     </h1>
-                    <h2 class="h3 text-muted mb-4">Software Developer</h2>
-                    <p class="lead mb-4">
+                    <h2 class="h3 text-muted mb-4 fade-in-up">
+                        <span class="gradient-text-2">Software Developer</span>
+                    </h2>
+                    <p class="lead mb-4 fade-in-up" style="line-height: 1.6; max-width: 600px;">
                         A dedicated Software Developer with 1 year of experience in building robust backend 
                         applications using Python and Django (including Django REST Framework). Recently, I have 
                         been working with FastAPI for the past 2 months, expanding my skills in developing modern 
@@ -20,7 +22,7 @@
                         innovative projects.
                     </p>
 
-                    <div class="hero-buttons">
+                    <div class="hero-buttons fade-in-up">
                         <a href="{% url 'projects' %}" class="btn btn-primary btn-lg me-3">
                             <i class="fas fa-folder-open"></i> View Projects
                         </a>
@@ -28,11 +30,52 @@
                             <i class="fas fa-envelope"></i> Contact Me
                         </a>
                     </div>
+
+                    <!-- Quick Stats -->
+                    <div class="row mt-5 fade-in-up">
+                        <div class="col-4">
+                            <div class="text-center">
+                                <h3 class="gradient-text fw-bold mb-0">1+</h3>
+                                <small class="text-muted">Years Experience</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <h3 class="gradient-text fw-bold mb-0">{{ featured_projects.count }}+</h3>
+                                <small class="text-muted">Projects Completed</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center">
+                                <h3 class="gradient-text fw-bold mb-0">5+</h3>
+                                <small class="text-muted">Technologies</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 text-center">
-                <div class="hero-image">
-                    <img src="{% static 'images/profile.jpg' %}" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img">
+                <div class="hero-image fade-in-scale">
+                    <div class="position-relative d-inline-block floating">
+                        <!-- In your template -->
+<img src="{{ MEDIA_URL }}images/profile.jpg" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img">
+                        <!-- Floating Elements Around Profile -->
+                        <div class="position-absolute" style="top: 10%; right: -10%; z-index: 10;">
+                            <div class="glass p-2 rounded-3 floating" style="animation-delay: 1s;">
+                                <i class="fab fa-python text-primary fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="position-absolute" style="bottom: 20%; left: -15%; z-index: 10;">
+                            <div class="glass p-2 rounded-3 floating" style="animation-delay: 2s;">
+                                <i class="fab fa-js-square text-warning fa-2x"></i>
+                            </div>
+                        </div>
+                        <div class="position-absolute" style="top: 60%; right: -5%; z-index: 10;">
+                            <div class="glass p-2 rounded-3 floating" style="animation-delay: 0.5s;">
+                                <i class="fas fa-database text-success fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,37 +83,46 @@
 </section>
 
 <!-- Skills Section -->
-<section class="skills-section py-5 bg-light">
+<section class="skills-section py-5 position-relative">
     <div class="container">
-        <h2 class="text-center mb-5">Technical Skills</h2>
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold gradient-text">Technical Skills</h2>
+            <p class="lead text-muted">Technologies I work with</p>
+        </div>
         <div class="row">
             {% for category, skills in skills_by_category.items %}
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="skill-category card h-100">
+                <div class="skill-category card h-100 fade-in-scale glass">
                     <div class="card-body">
-                        <h5 class="card-title text-primary">
+                        <h5 class="card-title text-center mb-4">
                             {% if category == 'programming' %}
-                                <i class="fas fa-code"></i> Programming
+                                <i class="fas fa-code gradient-text fa-lg"></i>
+                                <div class="gradient-text">Programming</div>
                             {% elif category == 'web' %}
-                                <i class="fas fa-globe"></i> Web Technologies
+                                <i class="fas fa-globe gradient-text fa-lg"></i>
+                                <div class="gradient-text">Web Technologies</div>
                             {% elif category == 'database' %}
-                                <i class="fas fa-database"></i> Databases
+                                <i class="fas fa-database gradient-text fa-lg"></i>
+                                <div class="gradient-text">Databases</div>
                             {% elif category == 'framework' %}
-                                <i class="fas fa-layer-group"></i> Frameworks
+                                <i class="fas fa-layer-group gradient-text fa-lg"></i>
+                                <div class="gradient-text">Frameworks</div>
                             {% elif category == 'tools' %}
-                                <i class="fas fa-tools"></i> Tools & Libraries
+                                <i class="fas fa-tools gradient-text fa-lg"></i>
+                                <div class="gradient-text">Tools & Libraries</div>
                             {% else %}
-                                <i class="fas fa-cog"></i> Other
+                                <i class="fas fa-cog gradient-text fa-lg"></i>
+                                <div class="gradient-text">Other</div>
                             {% endif %}
                         </h5>
                         {% for skill in skills %}
-                        <div class="skill-item mb-2">
-                            <div class="d-flex justify-content-between">
-                                <span>{{ skill.name }}</span>
+                        <div class="skill-item mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-medium">{{ skill.name }}</span>
                                 <span class="text-muted skill-value">{{ skill.proficiency }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar bg-primary" 
+                                <div class="progress-bar" 
                                      role="progressbar" 
                                      aria-valuemin="0" aria-valuemax="100"
                                      data-value="{{ skill.proficiency }}">
@@ -88,24 +140,38 @@
 
 <!-- Featured Projects Section -->
 {% if featured_projects %}
-<section class="featured-projects py-5">
+<section class="featured-projects py-5 position-relative">
     <div class="container">
-        <h2 class="text-center mb-5">Featured Projects</h2>
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold gradient-text">Featured Projects</h2>
+            <p class="lead text-muted">Some of my best work</p>
+        </div>
         <div class="row">
             {% for project in featured_projects %}
             <div class="col-md-4 mb-4">
-                <div class="card project-card h-100">
+                <div class="card project-card h-100 fade-in-scale glass">
                     {% if project.image %}
-                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                    <div class="position-relative overflow-hidden" style="height: 200px;">
+                        <img src="{{ project.image.url }}" class="card-img-top h-100 w-100" 
+                             style="object-fit: cover; transition: transform 0.3s ease;" 
+                             alt="{{ project.title }}"
+                             onmouseover="this.style.transform='scale(1.1)'"
+                             onmouseout="this.style.transform='scale(1)'">
+                    </div>
+                    {% else %}
+                    <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" 
+                         style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-code fa-3x text-white"></i>
+                    </div>
                     {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title">{{ project.title }}</h5>
+                        <h5 class="card-title gradient-text">{{ project.title }}</h5>
                         <p class="card-text">{{ project.description|truncatewords:20 }}</p>
                         <p class="text-muted small">
                             <i class="fas fa-tags"></i> {{ project.technologies }}
                         </p>
                     </div>
-                    <div class="card-footer bg-transparent">
+                    <div class="card-footer bg-transparent border-0">
                         {% if project.github_link %}
                         <a href="{{ project.github_link }}" class="btn btn-outline-primary btn-sm me-2" target="_blank">
                             <i class="fab fa-github"></i> Code
@@ -121,8 +187,8 @@
             </div>
             {% endfor %}
         </div>
-        <div class="text-center">
-            <a href="{% url 'projects' %}" class="btn btn-outline-primary">
+        <div class="text-center fade-in-up">
+            <a href="{% url 'projects' %}" class="btn btn-outline-primary btn-lg">
                 <i class="fas fa-arrow-right"></i> View All Projects
             </a>
         </div>
@@ -132,36 +198,45 @@
 
 <!-- Recent Experience Section -->
 {% if recent_experience %}
-<section class="recent-experience py-5 bg-light">
+<section class="recent-experience py-5 position-relative">
     <div class="container">
-        <h2 class="text-center mb-5">Current Role</h2>
+        <div class="text-center mb-5 fade-in-up">
+            <h2 class="display-5 fw-bold gradient-text">Current Role</h2>
+            <p class="lead text-muted">Where I'm making an impact</p>
+        </div>
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card experience-card">
-                    <div class="card-body">
+            <div class="col-md-10">
+                <div class="card experience-card fade-in-scale glass">
+                    <div class="card-body p-5">
                         <div class="row">
                             <div class="col-md-8">
-                                <h4 class="card-title text-primary">{{ recent_experience.position }}</h4>
-                                <h6 class="text-muted">{{ recent_experience.company }}</h6>
+                                <h4 class="card-title gradient-text mb-3">{{ recent_experience.position }}</h4>
+                                <h5 class="text-light mb-3">{{ recent_experience.company }}</h5>
                                 <p class="mb-2">
-                                    <i class="fas fa-calendar"></i> {{ recent_experience.duration }}
+                                    <i class="fas fa-calendar gradient-text"></i> 
+                                    <span class="ms-2">{{ recent_experience.duration }}</span>
                                 </p>
                                 <p class="mb-3">
-                                    <i class="fas fa-map-marker-alt"></i> {{ recent_experience.location }}
+                                    <i class="fas fa-map-marker-alt gradient-text"></i> 
+                                    <span class="ms-2">{{ recent_experience.location }}</span>
                                 </p>
-                                <p class="card-text">{{ recent_experience.description|truncatewords:30 }}</p>
+                                <p class="card-text lead">{{ recent_experience.description|truncatewords:30 }}</p>
                             </div>
                             <div class="col-md-4">
-                                <h6 class="text-primary">Technologies:</h6>
-                                <p class="small text-muted">{{ recent_experience.technologies }}</p>
+                                <div class="glass p-3 rounded">
+                                    <h6 class="gradient-text mb-3">
+                                        <i class="fas fa-tools"></i> Technologies
+                                    </h6>
+                                    <p class="small text-light">{{ recent_experience.technologies }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <a href="{% url 'experience' %}" class="btn btn-outline-primary">
+        <div class="text-center mt-4 fade-in-up">
+            <a href="{% url 'experience' %}" class="btn btn-outline-primary btn-lg">
                 <i class="fas fa-arrow-right"></i> View Full Experience
             </a>
         </div>
@@ -169,22 +244,107 @@
 </section>
 {% endif %}
 
-<!-- JS to decrease proficiency values -->
+<!-- Call to Action Section -->
+<section class="cta-section py-5 position-relative">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <div class="glass p-5 rounded-4 fade-in-scale">
+                    <h3 class="display-6 fw-bold gradient-text mb-3">Let's Work Together</h3>
+                    <p class="lead mb-4">
+                        I'm always interested in new opportunities and exciting projects. 
+                        Let's discuss how we can bring your ideas to life.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-envelope"></i> Get In Touch
+                        </a>
+                        <a href="mailto:sartaj.ahamad0502@gmail.com" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-paper-plane"></i> Send Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom JavaScript for this page -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Animate skill progress bars with random decrease
     document.querySelectorAll(".progress-bar").forEach(function (bar) {
         let originalValue = parseInt(bar.getAttribute("data-value"));
-        let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5; // random 5–10
+        let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
         let newValue = Math.max(0, originalValue - decrease);
-
-        // Update bar width and aria value
-        bar.style.width = newValue + "%";
-        bar.setAttribute("aria-valuenow", newValue);
 
         // Update percentage text
         let valueText = bar.closest(".skill-item").querySelector(".skill-value");
         if (valueText) valueText.textContent = newValue + "%";
+        
+        // Store the new value for animation
+        bar.setAttribute("data-value", newValue);
     });
+
+    // Typing animation for hero title
+    const heroTitle = document.querySelector('.hero-title');
+    if (heroTitle) {
+        gsap.from(heroTitle, {
+            duration: 2,
+            text: "",
+            ease: "none"
+        });
+    }
+
+    // Parallax effect for floating elements
+    gsap.to(".floating", {
+        y: -20,
+        duration: 2,
+        ease: "power1.inOut",
+        yoyo: true,
+        repeat: -1,
+        stagger: 0.5
+    });
+
+    // Scroll-triggered animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Skills animation
+    gsap.fromTo(".skill-category", 
+        { y: 50, opacity: 0 },
+        {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: ".skills-section",
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+            }
+        }
+    );
+
+    // Projects animation
+    gsap.fromTo(".project-card", 
+        { scale: 0.8, opacity: 0 },
+        {
+            scale: 1,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.2,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+                trigger: ".featured-projects",
+                start: "top 80%",
+                end: "bottom 20%",
+                toggleActions: "play none none reverse"
+            }
+        }
+    );
 });
 </script>
+
 {% endblock %}
