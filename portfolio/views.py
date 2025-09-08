@@ -41,8 +41,17 @@ def projects(request):
     }
     return render(request, 'portfolio/projects.html', context)
 
+
 def experience(request):
-    experiences = Experience.objects.all()
+    experiences = Experience.objects.all().order_by('order')  # or '-order' for reverse
+    
+    # Process technologies for each experience
+    for exp in experiences:
+        if exp.technologies:
+            exp.tech_list = [tech.strip() for tech in exp.technologies.split(',')]
+        else:
+            exp.tech_list = []
+    
     context = {
         'experiences': experiences,
     }

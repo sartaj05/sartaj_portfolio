@@ -72,10 +72,10 @@
                                                 <i class="fas fa-tools"></i> Technologies Used
                                             </h6>
                                             <div class="technologies">
-                                                {% for tech in experience.technologies|split:", " %}
-                                                <span class="badge glass me-1 mb-1">{{ tech|strip }}</span>
-                                                {% endfor %}
-                                            </div>
+    {% for tech in experience.tech_list %}
+    <span class="badge glass me-1 mb-1">{{ tech }}</span>
+    {% endfor %}
+</div>
                                         </div>
                                     </div>
                                 </div>
