@@ -14,7 +14,8 @@
                     <h2 class="h3 text-muted mb-4 fade-in-up">
                         <span class="gradient-text-2">Software Developer</span>
                     </h2>
-                    <p class="lead mb-4 fade-in-up" style="line-height: 1.6; max-width: 600px;">
+                    <!-- Fixed paragraph with fallback styling -->
+                    <p class="lead mb-4 description-text" style="line-height: 1.6; max-width: 600px; opacity: 1; visibility: visible;">
                         A dedicated Software Developer with 1 year of experience in building robust backend 
                         applications using Python and Django (including Django REST Framework). Recently, I have 
                         been working with FastAPI for the past 2 months, expanding my skills in developing modern 
@@ -41,7 +42,7 @@
                         </div>
                         <div class="col-4">
                             <div class="text-center">
-                                <h3 class="gradient-text fw-bold mb-0">{{ featured_projects.count }}+</h3>
+                                <h3 class="gradient-text fw-bold mb-0">{{ featured_projects.count|default:"5" }}+</h3>
                                 <small class="text-muted">Projects Completed</small>
                             </div>
                         </div>
@@ -57,8 +58,20 @@
             <div class="col-lg-6 text-center">
                 <div class="hero-image fade-in-scale">
                     <div class="position-relative d-inline-block floating">
-                        <!-- In your template -->
-<img src="{{ MEDIA_URL }}images/profile.jpg" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img">
+                        <!-- Multiple fallback options for profile image -->
+                        {% if MEDIA_URL %}
+                            <img src="{{ MEDIA_URL }}images/profile.jpg" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img" 
+                                 onerror="this.onerror=null; this.src='{% static 'images/profile.jpg' %}';">
+                        {% else %}
+                            <img src="{% static 'images/profile.jpg' %}" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img"
+                                 onerror="this.onerror=null; this.src='/media/images/profile.jpg';">
+                        {% endif %}
+                        
+                        <!-- Fallback placeholder if image fails -->
+                        <div class="profile-placeholder d-none" style="width: 300px; height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user fa-5x text-white"></i>
+                        </div>
+                        
                         <!-- Floating Elements Around Profile -->
                         <div class="position-absolute" style="top: 10%; right: -10%; z-index: 10;">
                             <div class="glass p-2 rounded-3 floating" style="animation-delay: 1s;">
@@ -133,6 +146,11 @@
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <!-- Fallback content if no skills -->
+            <div class="col-12 text-center">
+                <p class="text-muted">Skills will be displayed here when added to the database.</p>
+            </div>
             {% endfor %}
         </div>
     </div>
@@ -156,7 +174,13 @@
                              style="object-fit: cover; transition: transform 0.3s ease;" 
                              alt="{{ project.title }}"
                              onmouseover="this.style.transform='scale(1.1)'"
-                             onmouseout="this.style.transform='scale(1)'">
+                             onmouseout="this.style.transform='scale(1)'"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <!-- Fallback for project image -->
+                        <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" 
+                             style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: none;">
+                            <i class="fas fa-code fa-3x text-white"></i>
+                        </div>
                     </div>
                     {% else %}
                     <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" 
@@ -269,12 +293,70 @@
     </div>
 </section>
 
-<!-- Custom JavaScript for this page -->
+<!-- Custom CSS for fallbacks -->
+<style>
+    .description-text {
+        animation: fadeInUp 1s ease-out;
+    }
+    
+    .profile-img {
+        max-width: 300px;
+        max-height: 300px;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Ensure elements are visible by default */
+    .fade-in-up {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+
+<!-- Enhanced JavaScript -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Check if image loaded successfully
+    const profileImg = document.querySelector('.profile-img');
+    const profilePlaceholder = document.querySelector('.profile-placeholder');
+    
+    if (profileImg) {
+        profileImg.addEventListener('error', function() {
+            console.log('Profile image failed to load');
+            if (profilePlaceholder) {
+                profileImg.style.display = 'none';
+                profilePlaceholder.classList.remove('d-none');
+                profilePlaceholder.style.display = 'flex';
+            }
+        });
+        
+        profileImg.addEventListener('load', function() {
+            console.log('Profile image loaded successfully');
+        });
+    }
+
+    // Ensure description text is visible
+    const descriptionText = document.querySelector('.description-text');
+    if (descriptionText) {
+        descriptionText.style.opacity = '1';
+        descriptionText.style.visibility = 'visible';
+    }
+
     // Animate skill progress bars with random decrease
     document.querySelectorAll(".progress-bar").forEach(function (bar) {
-        let originalValue = parseInt(bar.getAttribute("data-value"));
+        let originalValue = parseInt(bar.getAttribute("data-value")) || 0;
         let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
         let newValue = Math.max(0, originalValue - decrease);
 
@@ -284,66 +366,83 @@ document.addEventListener("DOMContentLoaded", function () {
         
         // Store the new value for animation
         bar.setAttribute("data-value", newValue);
+        
+        // Animate the progress bar
+        setTimeout(() => {
+            bar.style.width = newValue + "%";
+        }, 500);
     });
 
-    // Typing animation for hero title
-    const heroTitle = document.querySelector('.hero-title');
-    if (heroTitle) {
-        gsap.from(heroTitle, {
+    // Check if GSAP is available before using it
+    if (typeof gsap !== 'undefined') {
+        // Typing animation for hero title
+        const heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+            gsap.from(heroTitle, {
+                duration: 2,
+                text: "",
+                ease: "none"
+            });
+        }
+
+        // Parallax effect for floating elements
+        gsap.to(".floating", {
+            y: -20,
             duration: 2,
-            text: "",
-            ease: "none"
+            ease: "power1.inOut",
+            yoyo: true,
+            repeat: -1,
+            stagger: 0.5
+        });
+
+        // Check if ScrollTrigger is available
+        if (typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Skills animation
+            gsap.fromTo(".skill-category", 
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".skills-section",
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+
+            // Projects animation
+            gsap.fromTo(".project-card", 
+                { scale: 0.8, opacity: 0 },
+                {
+                    scale: 1,
+                    opacity: 1,
+                    duration: 0.6,
+                    stagger: 0.2,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: ".featured-projects",
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        }
+    } else {
+        console.log('GSAP not loaded, using fallback animations');
+        // Simple fallback animations using CSS
+        document.querySelectorAll('.fade-in-up, .fade-in-scale').forEach(el => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0) scale(1)';
         });
     }
-
-    // Parallax effect for floating elements
-    gsap.to(".floating", {
-        y: -20,
-        duration: 2,
-        ease: "power1.inOut",
-        yoyo: true,
-        repeat: -1,
-        stagger: 0.5
-    });
-
-    // Scroll-triggered animations
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Skills animation
-    gsap.fromTo(".skill-category", 
-        { y: 50, opacity: 0 },
-        {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power2.out",
-            scrollTrigger: {
-                trigger: ".skills-section",
-                start: "top 80%",
-                end: "bottom 20%",
-                toggleActions: "play none none reverse"
-            }
-        }
-    );
-
-    // Projects animation
-    gsap.fromTo(".project-card", 
-        { scale: 0.8, opacity: 0 },
-        {
-            scale: 1,
-            opacity: 1,
-            duration: 0.6,
-            stagger: 0.2,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-                trigger: ".featured-projects",
-                start: "top 80%",
-                end: "bottom 20%",
-                toggleActions: "play none none reverse"
-            }
-        }
-    );
 });
 </script>
 
