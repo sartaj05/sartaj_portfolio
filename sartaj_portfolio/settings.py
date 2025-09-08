@@ -7,8 +7,7 @@ SECRET_KEY = 'your-secret-key-here'  # Change this in production
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
+ALLOWED_HOSTS = ['sartaj05.pythonanywhere.com', 'localhost', '127.0.0.1']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
