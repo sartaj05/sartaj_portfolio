@@ -14,8 +14,7 @@
                     <h2 class="h3 text-muted mb-4 fade-in-up">
                         <span class="gradient-text-2">Software Developer</span>
                     </h2>
-                    <!-- Fixed paragraph with fallback styling -->
-                    <p class="lead mb-4 description-text" style="line-height: 1.6; max-width: 600px; opacity: 1; visibility: visible;">
+                    <p class="lead mb-4 description-text" style="line-height: 1.6; max-width: 600px;">
                         A dedicated Software Developer with 1 year of experience in building robust backend 
                         applications using Python and Django (including Django REST Framework). Recently, I have 
                         been working with FastAPI for the past 2 months, expanding my skills in developing modern 
@@ -57,34 +56,44 @@
             </div>
             <div class="col-lg-6 text-center">
                 <div class="hero-image fade-in-scale">
-                    <div class="position-relative d-inline-block floating">
-                        <!-- Multiple fallback options for profile image -->
-                        {% if MEDIA_URL %}
-                            <img src="{{ MEDIA_URL }}images/profile.jpg" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img" 
-                                 onerror="this.onerror=null; this.src='{% static 'images/profile.jpg' %}';">
-                        {% else %}
-                            <img src="{% static 'images/profile.jpg' %}" alt="Sartaj Ahamad" class="img-fluid rounded-circle profile-img"
-                                 onerror="this.onerror=null; this.src='/media/images/profile.jpg';">
-                        {% endif %}
-                        
-                        <!-- Fallback placeholder if image fails -->
-                        <div class="profile-placeholder d-none" style="width: 300px; height: 300px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-user fa-5x text-white"></i>
+                    <div class="position-relative d-inline-block">
+                        <div class="profile-container" style="width: 300px; height: 300px; margin: 0 auto; position: relative;">
+                            <!-- Profile Image -->
+                            <img id="heroProfileImage" alt="Sartaj Ahamad" 
+                                 class="profile-img rounded-circle position-absolute top-0 start-0 w-100 h-100" 
+                                 style="object-fit: cover; border: 4px solid #667eea; opacity: 0; transition: opacity 0.3s ease;">
+                            
+                            <!-- Stylish Fallback Avatar -->
+                            <div id="heroFallbackAvatar" class="hero-avatar rounded-circle position-absolute top-0 start-0 w-100 h-100" 
+                                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                        display: flex; align-items: center; justify-content: center; 
+                                        border: 4px solid #667eea; overflow: hidden;">
+                                <!-- Avatar Content -->
+                                <div class="text-center">
+                                    <div style="font-size: 4rem; color: white; font-weight: bold; margin-bottom: 10px;">SA</div>
+                                    <div style="font-size: 1rem; color: rgba(255,255,255,0.8); font-weight: 500;">Software Developer</div>
+                                </div>
+                                <!-- Animated Background Elements -->
+                                <div class="position-absolute floating-circle-1" style="top: 20%; left: 10%; width: 60px; height: 60px; 
+                                     background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                                <div class="position-absolute floating-circle-2" style="bottom: 30%; right: 15%; width: 40px; height: 40px; 
+                                     background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            </div>
                         </div>
                         
                         <!-- Floating Elements Around Profile -->
-                        <div class="position-absolute" style="top: 10%; right: -10%; z-index: 10;">
-                            <div class="glass p-2 rounded-3 floating" style="animation-delay: 1s;">
+                        <div class="position-absolute floating-tech" style="top: 10%; right: -10%; z-index: 10;">
+                            <div class="glass p-2 rounded-3">
                                 <i class="fab fa-python text-primary fa-2x"></i>
                             </div>
                         </div>
-                        <div class="position-absolute" style="bottom: 20%; left: -15%; z-index: 10;">
-                            <div class="glass p-2 rounded-3 floating" style="animation-delay: 2s;">
+                        <div class="position-absolute floating-tech" style="bottom: 20%; left: -15%; z-index: 10;">
+                            <div class="glass p-2 rounded-3">
                                 <i class="fab fa-js-square text-warning fa-2x"></i>
                             </div>
                         </div>
-                        <div class="position-absolute" style="top: 60%; right: -5%; z-index: 10;">
-                            <div class="glass p-2 rounded-3 floating" style="animation-delay: 0.5s;">
+                        <div class="position-absolute floating-tech" style="top: 60%; right: -5%; z-index: 10;">
+                            <div class="glass p-2 rounded-3">
                                 <i class="fas fa-database text-success fa-2x"></i>
                             </div>
                         </div>
@@ -138,7 +147,8 @@
                                 <div class="progress-bar" 
                                      role="progressbar" 
                                      aria-valuemin="0" aria-valuemax="100"
-                                     data-value="{{ skill.proficiency }}">
+                                     data-value="{{ skill.proficiency }}"
+                                     style="width: 0%; transition: width 1s ease-in-out;">
                                 </div>
                             </div>
                         </div>
@@ -147,7 +157,6 @@
                 </div>
             </div>
             {% empty %}
-            <!-- Fallback content if no skills -->
             <div class="col-12 text-center">
                 <p class="text-muted">Skills will be displayed here when added to the database.</p>
             </div>
@@ -176,7 +185,6 @@
                              onmouseover="this.style.transform='scale(1.1)'"
                              onmouseout="this.style.transform='scale(1)'"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <!-- Fallback for project image -->
                         <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" 
                              style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: none;">
                             <i class="fas fa-code fa-3x text-white"></i>
@@ -293,113 +301,190 @@
     </div>
 </section>
 
-<!-- Custom CSS for fallbacks -->
 <style>
-    .description-text {
-        animation: fadeInUp 1s ease-out;
+.description-text {
+    opacity: 1;
+    visibility: visible;
+}
+
+.profile-container {
+    position: relative;
+}
+
+.profile-img {
+    z-index: 2;
+}
+
+.hero-avatar {
+    z-index: 1;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.hero-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+.floating-circle-1 {
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-circle-2 {
+    animation: float 4s ease-in-out infinite reverse;
+}
+
+.floating-tech {
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-tech:nth-child(2) {
+    animation-delay: 1s;
+}
+
+.floating-tech:nth-child(3) {
+    animation-delay: 2s;
+}
+
+.floating-tech:nth-child(4) {
+    animation-delay: 0.5s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
     }
-    
-    .profile-img {
-        max-width: 300px;
-        max-height: 300px;
-        width: 100%;
-        height: auto;
-        object-fit: cover;
+    50% {
+        transform: translateY(-10px);
     }
-    
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* Ensure elements are visible by default */
-    .fade-in-up {
-        opacity: 1;
-        transform: translateY(0);
-    }
+}
+
+.fade-in-up, .fade-in-scale {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Image loading states */
+.profile-img.loaded {
+    opacity: 1 !important;
+}
+
+.hero-avatar.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
 </style>
 
-<!-- Enhanced JavaScript -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // Check if image loaded successfully
-    const profileImg = document.querySelector('.profile-img');
-    const profilePlaceholder = document.querySelector('.profile-placeholder');
+    console.log("DOM loaded, initializing image loading...");
     
-    if (profileImg) {
-        profileImg.addEventListener('error', function() {
-            console.log('Profile image failed to load');
-            if (profilePlaceholder) {
-                profileImg.style.display = 'none';
-                profilePlaceholder.classList.remove('d-none');
-                profilePlaceholder.style.display = 'flex';
-            }
-        });
-        
-        profileImg.addEventListener('load', function() {
-            console.log('Profile image loaded successfully');
-        });
-    }
-
-    // Ensure description text is visible
-    const descriptionText = document.querySelector('.description-text');
-    if (descriptionText) {
-        descriptionText.style.opacity = '1';
-        descriptionText.style.visibility = 'visible';
-    }
-
-    // Animate skill progress bars with random decrease
-    document.querySelectorAll(".progress-bar").forEach(function (bar) {
-        let originalValue = parseInt(bar.getAttribute("data-value")) || 0;
-        let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-        let newValue = Math.max(0, originalValue - decrease);
-
-        // Update percentage text
-        let valueText = bar.closest(".skill-item").querySelector(".skill-value");
-        if (valueText) valueText.textContent = newValue + "%";
-        
-        // Store the new value for animation
-        bar.setAttribute("data-value", newValue);
-        
-        // Animate the progress bar
-        setTimeout(() => {
-            bar.style.width = newValue + "%";
-        }, 500);
-    });
-
-    // Check if GSAP is available before using it
-    if (typeof gsap !== 'undefined') {
-        // Typing animation for hero title
-        const heroTitle = document.querySelector('.hero-title');
-        if (heroTitle) {
-            gsap.from(heroTitle, {
-                duration: 2,
-                text: "",
-                ease: "none"
-            });
+    const heroProfileImg = document.getElementById('heroProfileImage');
+    const heroFallbackAvatar = document.getElementById('heroFallbackAvatar');
+    
+    // Show fallback avatar by default
+    heroFallbackAvatar.style.opacity = '1';
+    heroFallbackAvatar.style.display = 'flex';
+    
+    // Array of possible image paths
+    const heroImagePaths = [
+        "{% static 'media/images/profile.jpg' %}",
+        "{% static 'images/profile.jpg' %}",
+        "{% static 'img/profile.jpg' %}",
+        "{% static 'assets/images/profile.jpg' %}",
+        "{% static 'media/profile.jpg' %}",
+        "{% static 'profile.jpg' %}",
+        "/media/images/profile.jpg",
+        "/static/media/images/profile.jpg"
+    ];
+    
+    let currentHeroPathIndex = 0;
+    let imageLoaded = false;
+    
+    function tryLoadHeroImage() {
+        if (currentHeroPathIndex < heroImagePaths.length && !imageLoaded) {
+            console.log('Trying to load image from:', heroImagePaths[currentHeroPathIndex]);
+            
+            // Create a new image element to test loading
+            const testImg = new Image();
+            
+            testImg.onload = function() {
+                console.log('Image loaded successfully from:', heroImagePaths[currentHeroPathIndex]);
+                imageLoaded = true;
+                
+                // Set the source and show the real image
+                heroProfileImg.src = heroImagePaths[currentHeroPathIndex];
+                heroProfileImg.style.opacity = '1';
+                heroProfileImg.classList.add('loaded');
+                
+                // Hide the fallback avatar
+                heroFallbackAvatar.style.opacity = '0';
+                setTimeout(() => {
+                    heroFallbackAvatar.style.display = 'none';
+                }, 300);
+            };
+            
+            testImg.onerror = function() {
+                console.log('Failed to load image from:', heroImagePaths[currentHeroPathIndex]);
+                currentHeroPathIndex++;
+                setTimeout(tryLoadHeroImage, 100); // Small delay before trying next path
+            };
+            
+            testImg.src = heroImagePaths[currentHeroPathIndex];
+        } else if (!imageLoaded) {
+            console.log('All image paths failed, keeping fallback avatar visible');
+            // Ensure fallback avatar stays visible
+            heroFallbackAvatar.style.opacity = '1';
+            heroFallbackAvatar.style.display = 'flex';
         }
+    }
+    
+    // Start trying to load images after a short delay
+    setTimeout(tryLoadHeroImage, 500);
+    
+    // Animate skill progress bars
+    setTimeout(() => {
+        document.querySelectorAll(".progress-bar").forEach(function (bar) {
+            let originalValue = parseInt(bar.getAttribute("data-value")) || 0;
+            let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+            let newValue = Math.max(0, originalValue - decrease);
 
-        // Parallax effect for floating elements
-        gsap.to(".floating", {
-            y: -20,
-            duration: 2,
-            ease: "power1.inOut",
-            yoyo: true,
-            repeat: -1,
-            stagger: 0.5
+            // Update percentage text
+            let valueText = bar.closest(".skill-item").querySelector(".skill-value");
+            if (valueText) valueText.textContent = newValue + "%";
+            
+            // Animate the progress bar
+            bar.style.width = newValue + "%";
         });
+    }, 1000);
 
-        // Check if ScrollTrigger is available
+    // Add hover effects
+    function addHoverEffects() {
+        const profileElement = imageLoaded ? heroProfileImg : heroFallbackAvatar;
+        
+        profileElement.addEventListener('mouseenter', () => {
+            profileElement.style.transform = 'scale(1.05)';
+        });
+        
+        profileElement.addEventListener('mouseleave', () => {
+            profileElement.style.transform = 'scale(1)';
+        });
+    }
+    
+    // Add hover effects after initial load
+    setTimeout(addHoverEffects, 1000);
+
+    // GSAP animations (if available)
+    if (typeof gsap !== 'undefined') {
+        console.log('GSAP available, initializing animations');
+        
         if (typeof ScrollTrigger !== 'undefined') {
             gsap.registerPlugin(ScrollTrigger);
 
-            // Skills animation
             gsap.fromTo(".skill-category", 
                 { y: 50, opacity: 0 },
                 {
@@ -417,7 +502,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             );
 
-            // Projects animation
             gsap.fromTo(".project-card", 
                 { scale: 0.8, opacity: 0 },
                 {
@@ -436,12 +520,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
         }
     } else {
-        console.log('GSAP not loaded, using fallback animations');
-        // Simple fallback animations using CSS
-        document.querySelectorAll('.fade-in-up, .fade-in-scale').forEach(el => {
-            el.style.opacity = '1';
-            el.style.transform = 'translateY(0) scale(1)';
-        });
+        console.log('GSAP not loaded, using basic animations');
     }
 });
 </script>

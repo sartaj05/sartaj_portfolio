@@ -10,8 +10,21 @@
             <div class="col-lg-4 mb-5">
                 <div class="text-center fade-in-scale">
                     <div class="position-relative d-inline-block">
-                        <img src="{% static 'images/profile.jpg' %}" alt="Sartaj Ahamad" 
-                             class="img-fluid rounded-circle profile-img mb-4 floating">
+                        <div class="profile-container" style="width: 200px; height: 200px; margin: 0 auto; position: relative;">
+                            <!-- Profile Image -->
+                            <img id="aboutProfileImage" alt="Sartaj Ahamad" 
+                                 class="profile-img rounded-circle position-absolute top-0 start-0 w-100 h-100 floating" 
+                                 style="object-fit: cover; border: 3px solid #667eea; opacity: 0; transition: opacity 0.3s ease; z-index: 2;">
+                            
+                            <!-- Fallback Avatar -->
+                            <div id="aboutFallbackAvatar" class="fallback-avatar rounded-circle position-absolute top-0 start-0 w-100 h-100 floating" 
+                                 style="background: linear-gradient(135deg, #667eea, #764ba2); 
+                                        display: flex; align-items: center; justify-content: center; 
+                                        border: 3px solid #667eea; z-index: 1;">
+                                <span style="font-size: 4rem; color: white; font-weight: bold;">SA</span>
+                            </div>
+                        </div>
+                        
                         <!-- Social orbit animation -->
                         <div class="position-absolute top-0 start-0 w-100 h-100">
                             <div class="position-absolute" style="top: 10%; right: -10%; animation: orbit 8s linear infinite;">
@@ -58,9 +71,12 @@
                     <div class="glass p-4 mb-4 rounded-4">
                         <p style="line-height: 1.7;">
                             My journey in software development began during my BTech in Information Technology at 
-                            Chaudhary Charan Singh University, Meerut. I have developed strong skills in creating 
-                            scalable REST APIs, leveraging caching systems for performance optimization, and 
-                            writing test-driven, maintainable code using Pytest and SonarQube.
+                            Chaudhary Charan Singh University, Meerut, where I started working with frontend technologies 
+                            including HTML, CSS, and JavaScript. During my college years, I also developed data analytics 
+                            dashboards, which sparked my interest in data-driven solutions. As I progressed through my 
+                            studies, I transitioned to backend development, where I discovered my passion for creating 
+                            scalable REST APIs, leveraging caching systems for performance optimization, and writing 
+                            test-driven, maintainable code using Pytest and SonarQube.
                         </p>
                     </div>
                     
@@ -68,7 +84,9 @@
                         <p style="line-height: 1.7;">
                             Currently working as a Jr. Software Engineer at Createch Software Pvt. Ltd. for the 
                             Ministry of Defence (ASDC), I am involved in developing enterprise-level solutions 
-                            using cutting-edge technologies. I am passionate about contributing to innovative 
+                            using cutting-edge technologies. My diverse experience from frontend development to 
+                            data analytics and now backend engineering gives me a comprehensive understanding of 
+                            the full development lifecycle. I am passionate about contributing to innovative 
                             solutions in web development and AI/ML domains while continuously growing in dynamic 
                             environments.
                         </p>
@@ -164,7 +182,8 @@
                                 <div class="progress-bar" 
                                      role="progressbar" 
                                      aria-valuemin="0" aria-valuemax="100"
-                                     data-value="{{ skill.proficiency }}">
+                                     data-value="{{ skill.proficiency }}"
+                                     style="width: 0%; transition: width 1s ease-in-out; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);">
                                 </div>
                             </div>
                         </div>
@@ -230,6 +249,19 @@
     }
 }
 
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
 .social-links .btn {
     width: 50px;
     height: 50px;
@@ -258,74 +290,190 @@
     background: linear-gradient(135deg, #667eea, #764ba2);
     border-radius: 50%;
 }
+
+.profile-container {
+    position: relative;
+}
+
+.profile-img {
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.fallback-avatar {
+    z-index: 1;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.fallback-avatar:hover, .profile-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+.profile-img.loaded {
+    opacity: 1 !important;
+}
+
+.fade-in-up, .fade-in-scale {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("About page loaded, initializing image loading...");
+    
+    const aboutProfileImg = document.getElementById('aboutProfileImage');
+    const aboutFallbackAvatar = document.getElementById('aboutFallbackAvatar');
+    
+    // Show fallback avatar by default
+    aboutFallbackAvatar.style.opacity = '1';
+    aboutFallbackAvatar.style.display = 'flex';
+    
+    // Array of possible image paths to try
+    const aboutImagePaths = [
+        "{% static 'media/images/profile.jpg' %}",
+        "{% static 'images/profile.jpg' %}",
+        "{% static 'img/profile.jpg' %}",
+        "{% static 'assets/images/profile.jpg' %}",
+        "{% static 'media/profile.jpg' %}",
+        "{% static 'profile.jpg' %}",
+        "/media/images/profile.jpg",
+        "/static/media/images/profile.jpg"
+    ];
+    
+    let currentAboutPathIndex = 0;
+    let aboutImageLoaded = false;
+    
+    function tryLoadAboutImage() {
+        if (currentAboutPathIndex < aboutImagePaths.length && !aboutImageLoaded) {
+            console.log('Trying to load about image from:', aboutImagePaths[currentAboutPathIndex]);
+            
+            // Create a new image element to test loading
+            const testImg = new Image();
+            
+            testImg.onload = function() {
+                console.log('About image loaded successfully from:', aboutImagePaths[currentAboutPathIndex]);
+                aboutImageLoaded = true;
+                
+                // Set the source and show the real image
+                aboutProfileImg.src = aboutImagePaths[currentAboutPathIndex];
+                aboutProfileImg.style.opacity = '1';
+                aboutProfileImg.classList.add('loaded');
+                
+                // Hide the fallback avatar
+                aboutFallbackAvatar.style.opacity = '0';
+                setTimeout(() => {
+                    aboutFallbackAvatar.style.display = 'none';
+                }, 300);
+            };
+            
+            testImg.onerror = function() {
+                console.log('Failed to load about image from:', aboutImagePaths[currentAboutPathIndex]);
+                currentAboutPathIndex++;
+                setTimeout(tryLoadAboutImage, 100); // Small delay before trying next path
+            };
+            
+            testImg.src = aboutImagePaths[currentAboutPathIndex];
+        } else if (!aboutImageLoaded) {
+            console.log('All about image paths failed, keeping fallback avatar visible');
+            // Ensure fallback avatar stays visible
+            aboutFallbackAvatar.style.opacity = '1';
+            aboutFallbackAvatar.style.display = 'flex';
+        }
+    }
+    
+    // Start trying to load images after a short delay
+    setTimeout(tryLoadAboutImage, 500);
+
     // Animate skill progress bars
-    document.querySelectorAll(".progress-bar").forEach(function (bar) {
-        let originalValue = parseInt(bar.getAttribute("data-value"));
-        let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-        let newValue = Math.max(0, originalValue - decrease);
+    setTimeout(() => {
+        document.querySelectorAll(".progress-bar").forEach(function (bar) {
+            let originalValue = parseInt(bar.getAttribute("data-value")) || 0;
+            let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+            let newValue = Math.max(0, originalValue - decrease);
 
-        // Update text
-        let valueText = bar.closest(".skill-item").querySelector(".skill-value");
-        if (valueText) valueText.textContent = newValue + "%";
+            // Update text
+            let valueText = bar.closest(".skill-item").querySelector(".skill-value");
+            if (valueText) valueText.textContent = newValue + "%";
+            
+            // Animate the progress bar
+            bar.style.width = newValue + "%";
+        });
+    }, 1000);
+
+    // Add hover effects
+    function addAboutHoverEffects() {
+        const profileElement = aboutImageLoaded ? aboutProfileImg : aboutFallbackAvatar;
         
-        // Store new value for animation
-        bar.setAttribute("data-value", newValue);
-    });
-
-    // GSAP animations
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Stagger animation for skill categories
-    gsap.fromTo(".skill-category", 
-        { y: 50, opacity: 0, scale: 0.9 },
-        {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            stagger: 0.15,
-            ease: "back.out(1.7)",
-            scrollTrigger: {
-                trigger: ".skills-section",
-                start: "top 80%",
-                end: "bottom 20%",
-                toggleActions: "play none none reverse"
+        profileElement.addEventListener('mouseenter', () => {
+            if (typeof gsap !== 'undefined') {
+                gsap.to(profileElement, { scale: 1.1, duration: 0.3, ease: "power2.out" });
+            } else {
+                profileElement.style.transform = 'scale(1.05)';
             }
-        }
-    );
-
-    // Interests cards animation
-    gsap.fromTo(".interests-section .card", 
-        { rotateY: 90, opacity: 0 },
-        {
-            rotateY: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.2,
-            ease: "power2.out",
-            scrollTrigger: {
-                trigger: ".interests-section",
-                start: "top 80%",
-                end: "bottom 20%",
-                toggleActions: "play none none reverse"
-            }
-        }
-    );
-
-    // Profile image hover effect
-    const profileImg = document.querySelector('.profile-img');
-    if (profileImg) {
-        profileImg.addEventListener('mouseenter', () => {
-            gsap.to(profileImg, { scale: 1.1, duration: 0.3, ease: "power2.out" });
         });
         
-        profileImg.addEventListener('mouseleave', () => {
-            gsap.to(profileImg, { scale: 1, duration: 0.3, ease: "power2.out" });
+        profileElement.addEventListener('mouseleave', () => {
+            if (typeof gsap !== 'undefined') {
+                gsap.to(profileElement, { scale: 1, duration: 0.3, ease: "power2.out" });
+            } else {
+                profileElement.style.transform = 'scale(1)';
+            }
         });
+    }
+    
+    // Add hover effects after initial load
+    setTimeout(addAboutHoverEffects, 1000);
+
+    // GSAP animations (if available)
+    if (typeof gsap !== 'undefined') {
+        console.log('GSAP available for about page');
+        
+        if (typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Stagger animation for skill categories
+            gsap.fromTo(".skill-category", 
+                { y: 50, opacity: 0, scale: 0.9 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    stagger: 0.15,
+                    ease: "back.out(1.7)",
+                    scrollTrigger: {
+                        trigger: ".skills-section",
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+
+            // Interests cards animation
+            gsap.fromTo(".interests-section .card", 
+                { rotateY: 90, opacity: 0 },
+                {
+                    rotateY: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: ".interests-section",
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse"
+                    }
+                }
+            );
+        }
+    } else {
+        console.log('GSAP not loaded for about page, using fallback animations');
     }
 });
 </script>
