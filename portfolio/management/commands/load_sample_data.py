@@ -48,7 +48,7 @@ class Command(BaseCommand):
                 'company': 'Mobiloitte Technologies',
                 'position': 'Software Developer (Python/Django - AI/ML)',
                 'duration': 'October 2024 – December 2024',
-                'location': 'Remote (Internship)',
+                'location': 'Delhi',
                 'description': 'Designed and developed scalable backend solutions using Python, Django, and RESTful APIs for web applications. Collaborated with front-end teams to integrate robust APIs and improve application performance.',
                 'technologies': 'Python, Django, REST APIs, JWT',
                 'order': 2
