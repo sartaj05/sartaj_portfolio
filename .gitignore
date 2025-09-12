@@ -28,8 +28,6 @@ env/
 .DS_Store
 Thumbs.db
 
-# Static files
-staticfiles/
 
 # Environment variables
 .env
