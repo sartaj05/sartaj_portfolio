@@ -3,19 +3,21 @@ from pathlib import Path
 import dj_database_url
 from decouple import config
 
-# Build paths inside the project
+# -----------------------------
+# Base Directory
+# -----------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key secret in production!
-SECRET_KEY = config("SECRET_KEY")
-
-# DEBUG mode (False in production)
+# -----------------------------
+# Security
+# -----------------------------
+SECRET_KEY = config("SECRET_KEY", default="fallback-secret-key")
 DEBUG = config("DEBUG", default=False, cast=bool)
-
-# Allowed hosts
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
 
-# Application definition
+# -----------------------------
+# Applications
+# -----------------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -23,7 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'portfolio', 
+    "portfolio",  # Your portfolio app
 ]
 
 MIDDLEWARE = [
@@ -36,8 +38,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'sartaj_portfolio.urls'
-
+ROOT_URLCONF = "sartaj_portfolio.urls"
 
 TEMPLATES = [
     {
@@ -57,7 +58,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "sartaj_portfolio.wsgi.application"
 
-# Database
+# -----------------------------
+# Database (Postgres via Render)
+# -----------------------------
 DATABASES = {
     "default": dj_database_url.config(
         default=config("DATABASE_URL"),
@@ -66,7 +69,9 @@ DATABASES = {
     )
 }
 
-# Password validation
+# -----------------------------
+# Password Validators
+# -----------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -74,20 +79,28 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+# -----------------------------
 # Internationalization
+# -----------------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# -----------------------------
 # Static files
+# -----------------------------
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# -----------------------------
 # Media files
+# -----------------------------
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+# -----------------------------
 # Default primary key field type
+# -----------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
