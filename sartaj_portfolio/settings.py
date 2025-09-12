@@ -55,7 +55,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "your_project_name.wsgi.application"
+WSGI_APPLICATION = "sartaj_portfolio.wsgi.application"
 
 # Database
 DATABASES = {
