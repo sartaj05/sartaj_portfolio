@@ -10,36 +10,37 @@
             <div class="col-lg-4 mb-5">
                 <div class="text-center fade-in-scale">
                     <div class="position-relative d-inline-block">
-                        <div class="profile-container" style="width: 200px; height: 200px; margin: 0 auto; position: relative;">
-                            <!-- Profile Image -->
-                            <img id="aboutProfileImage" alt="Sartaj Ahamad" 
-                                 class="profile-img rounded-circle position-absolute top-0 start-0 w-100 h-100 floating" 
-                                 style="object-fit: cover; border: 3px solid #667eea; opacity: 0; transition: opacity 0.3s ease; z-index: 2;">
-                            
-                            <!-- Fallback Avatar -->
-                            <div id="aboutFallbackAvatar" class="fallback-avatar rounded-circle position-absolute top-0 start-0 w-100 h-100 floating" 
-                                 style="background: linear-gradient(135deg, #667eea, #764ba2); 
-                                        display: flex; align-items: center; justify-content: center; 
-                                        border: 3px solid #667eea; z-index: 1;">
-                                <span style="font-size: 4rem; color: white; font-weight: bold;">SA</span>
+                        <!-- Profile Avatar -->
+                        <div class="about-avatar rounded-circle d-inline-block floating" 
+                             style="width: 200px; height: 200px; 
+                                    background: linear-gradient(135deg, #667eea, #764ba2); 
+                                    display: flex; align-items: center; justify-content: center; 
+                                    border: 3px solid #667eea; position: relative; overflow: hidden;">
+                            <div class="text-center">
+                                <div style="font-size: 4rem; color: white; font-weight: bold;">SA</div>
                             </div>
+                            <!-- Animated circles -->
+                            <div class="position-absolute" style="top: 20%; left: 15%; width: 30px; height: 30px; 
+                                 background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 3s ease-in-out infinite;"></div>
+                            <div class="position-absolute" style="bottom: 25%; right: 20%; width: 20px; height: 20px; 
+                                 background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 4s ease-in-out infinite reverse;"></div>
                         </div>
                         
                         <!-- Social orbit animation -->
                         <div class="position-absolute top-0 start-0 w-100 h-100">
-                            <div class="position-absolute" style="top: 10%; right: -10%; animation: orbit 8s linear infinite;">
+                            <div class="position-absolute orbit-element" style="top: 10%; right: -10%; animation: orbit 8s linear infinite;">
                                 <div class="glass p-2 rounded-circle">
                                     <i class="fab fa-github text-light"></i>
                                 </div>
                             </div>
-                            <div class="position-absolute" style="bottom: 10%; left: -10%; animation: orbit 10s linear infinite reverse;">
+                            <div class="position-absolute orbit-element" style="bottom: 10%; left: -10%; animation: orbit 10s linear infinite reverse;">
                                 <div class="glass p-2 rounded-circle">
                                     <i class="fab fa-linkedin text-primary"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <h3 class="gradient-text fw-bold">Sartaj Ahamad</h3>
+                    <h3 class="gradient-text fw-bold mt-3">Sartaj Ahamad</h3>
                     <p class="text-muted mb-4">Software Developer</p>
                     <div class="social-links">
                         <a href="mailto:sartaj.ahamad0502@gmail.com" class="btn glass me-2 mb-2">
@@ -60,7 +61,7 @@
                     <h2 class="mb-4 gradient-text display-6 fw-bold">About Me</h2>
                     <div class="glass p-4 mb-4 rounded-4">
                         <p class="lead mb-4" style="line-height: 1.7;">
-                            A dedicated Software Developer with 1 year of experience in building robust backend 
+                            A dedicated Software Developer with 1+ year of experience in building robust backend 
                             applications using Python and Django (including Django REST Framework). Recently, I have 
                             been working with FastAPI for the past 2 months, expanding my skills in developing modern 
                             and efficient APIs. Passionate about creating scalable solutions and contributing to 
@@ -249,17 +250,14 @@
     }
 }
 
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
+.about-avatar {
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
-.floating {
-    animation: float 3s ease-in-out infinite;
+.about-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
 }
 
 .social-links .btn {
@@ -291,189 +289,59 @@
     border-radius: 50%;
 }
 
-.profile-container {
-    position: relative;
-}
-
-.profile-img {
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-.fallback-avatar {
-    z-index: 1;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-}
-
-.fallback-avatar:hover, .profile-img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-}
-
-.profile-img.loaded {
-    opacity: 1 !important;
-}
-
-.fade-in-up, .fade-in-scale {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+.orbit-element {
+    z-index: 5;
 }
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("About page loaded, initializing image loading...");
-    
-    const aboutProfileImg = document.getElementById('aboutProfileImage');
-    const aboutFallbackAvatar = document.getElementById('aboutFallbackAvatar');
-    
-    // Show fallback avatar by default
-    aboutFallbackAvatar.style.opacity = '1';
-    aboutFallbackAvatar.style.display = 'flex';
-    
-    // Array of possible image paths to try
-    const aboutImagePaths = [
-        "{% static 'media/images/profile.jpg' %}",
-        "{% static 'images/profile.jpg' %}",
-        "{% static 'img/profile.jpg' %}",
-        "{% static 'assets/images/profile.jpg' %}",
-        "{% static 'media/profile.jpg' %}",
-        "{% static 'profile.jpg' %}",
-        "/media/images/profile.jpg",
-        "/static/media/images/profile.jpg"
-    ];
-    
-    let currentAboutPathIndex = 0;
-    let aboutImageLoaded = false;
-    
-    function tryLoadAboutImage() {
-        if (currentAboutPathIndex < aboutImagePaths.length && !aboutImageLoaded) {
-            console.log('Trying to load about image from:', aboutImagePaths[currentAboutPathIndex]);
-            
-            // Create a new image element to test loading
-            const testImg = new Image();
-            
-            testImg.onload = function() {
-                console.log('About image loaded successfully from:', aboutImagePaths[currentAboutPathIndex]);
-                aboutImageLoaded = true;
-                
-                // Set the source and show the real image
-                aboutProfileImg.src = aboutImagePaths[currentAboutPathIndex];
-                aboutProfileImg.style.opacity = '1';
-                aboutProfileImg.classList.add('loaded');
-                
-                // Hide the fallback avatar
-                aboutFallbackAvatar.style.opacity = '0';
-                setTimeout(() => {
-                    aboutFallbackAvatar.style.display = 'none';
-                }, 300);
-            };
-            
-            testImg.onerror = function() {
-                console.log('Failed to load about image from:', aboutImagePaths[currentAboutPathIndex]);
-                currentAboutPathIndex++;
-                setTimeout(tryLoadAboutImage, 100); // Small delay before trying next path
-            };
-            
-            testImg.src = aboutImagePaths[currentAboutPathIndex];
-        } else if (!aboutImageLoaded) {
-            console.log('All about image paths failed, keeping fallback avatar visible');
-            // Ensure fallback avatar stays visible
-            aboutFallbackAvatar.style.opacity = '1';
-            aboutFallbackAvatar.style.display = 'flex';
-        }
-    }
-    
-    // Start trying to load images after a short delay
-    setTimeout(tryLoadAboutImage, 500);
-
     // Animate skill progress bars
     setTimeout(() => {
         document.querySelectorAll(".progress-bar").forEach(function (bar) {
-            let originalValue = parseInt(bar.getAttribute("data-value")) || 0;
-            let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-            let newValue = Math.max(0, originalValue - decrease);
-
-            // Update text
-            let valueText = bar.closest(".skill-item").querySelector(".skill-value");
-            if (valueText) valueText.textContent = newValue + "%";
-            
-            // Animate the progress bar
-            bar.style.width = newValue + "%";
+            const value = parseInt(bar.getAttribute("data-value")) || 0;
+            bar.style.width = value + "%";
         });
     }, 1000);
 
-    // Add hover effects
-    function addAboutHoverEffects() {
-        const profileElement = aboutImageLoaded ? aboutProfileImg : aboutFallbackAvatar;
-        
-        profileElement.addEventListener('mouseenter', () => {
-            if (typeof gsap !== 'undefined') {
-                gsap.to(profileElement, { scale: 1.1, duration: 0.3, ease: "power2.out" });
-            } else {
-                profileElement.style.transform = 'scale(1.05)';
-            }
-        });
-        
-        profileElement.addEventListener('mouseleave', () => {
-            if (typeof gsap !== 'undefined') {
-                gsap.to(profileElement, { scale: 1, duration: 0.3, ease: "power2.out" });
-            } else {
-                profileElement.style.transform = 'scale(1)';
-            }
-        });
-    }
-    
-    // Add hover effects after initial load
-    setTimeout(addAboutHoverEffects, 1000);
-
     // GSAP animations (if available)
-    if (typeof gsap !== 'undefined') {
-        console.log('GSAP available for about page');
-        
-        if (typeof ScrollTrigger !== 'undefined') {
-            gsap.registerPlugin(ScrollTrigger);
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
 
-            // Stagger animation for skill categories
-            gsap.fromTo(".skill-category", 
-                { y: 50, opacity: 0, scale: 0.9 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.8,
-                    stagger: 0.15,
-                    ease: "back.out(1.7)",
-                    scrollTrigger: {
-                        trigger: ".skills-section",
-                        start: "top 80%",
-                        end: "bottom 20%",
-                        toggleActions: "play none none reverse"
-                    }
+        // Stagger animation for skill categories
+        gsap.fromTo(".skill-category", 
+            { y: 50, opacity: 0, scale: 0.9 },
+            {
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                    trigger: ".skills-section",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
                 }
-            );
+            }
+        );
 
-            // Interests cards animation
-            gsap.fromTo(".interests-section .card", 
-                { rotateY: 90, opacity: 0 },
-                {
-                    rotateY: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    stagger: 0.2,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: ".interests-section",
-                        start: "top 80%",
-                        end: "bottom 20%",
-                        toggleActions: "play none none reverse"
-                    }
+        // Interests cards animation
+        gsap.fromTo(".interests-section .card", 
+            { rotateY: 90, opacity: 0 },
+            {
+                rotateY: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ".interests-section",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
                 }
-            );
-        }
-    } else {
-        console.log('GSAP not loaded for about page, using fallback animations');
+            }
+        );
     }
 });
 </script>

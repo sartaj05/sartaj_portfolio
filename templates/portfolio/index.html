@@ -15,7 +15,7 @@
                         <span class="gradient-text-2">Software Developer</span>
                     </h2>
                     <p class="lead mb-4 description-text" style="line-height: 1.6; max-width: 600px;">
-                        A dedicated Software Developer with 1 year of experience in building robust backend 
+                        A dedicated Software Developer with 1+ year of experience in building robust backend 
                         applications using Python and Django (including Django REST Framework). Recently, I have 
                         been working with FastAPI for the past 2 months, expanding my skills in developing modern 
                         and efficient APIs. Passionate about creating scalable solutions and contributing to 
@@ -41,13 +41,13 @@
                         </div>
                         <div class="col-4">
                             <div class="text-center">
-                                <h3 class="gradient-text fw-bold mb-0">{{ featured_projects.count|default:"5" }}+</h3>
-                                <small class="text-muted">Projects Completed</small>
+                                <h3 class="gradient-text fw-bold mb-0">5+</h3>
+                                <small class="text-muted">Projects</small>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="text-center">
-                                <h3 class="gradient-text fw-bold mb-0">5+</h3>
+                                <h3 class="gradient-text fw-bold mb-0">8+</h3>
                                 <small class="text-muted">Technologies</small>
                             </div>
                         </div>
@@ -57,28 +57,24 @@
             <div class="col-lg-6 text-center">
                 <div class="hero-image fade-in-scale">
                     <div class="position-relative d-inline-block">
-                        <div class="profile-container" style="width: 300px; height: 300px; margin: 0 auto; position: relative;">
-                            <!-- Profile Image -->
-                            <img id="heroProfileImage" alt="Sartaj Ahamad" 
-                                 class="profile-img rounded-circle position-absolute top-0 start-0 w-100 h-100" 
-                                 style="object-fit: cover; border: 4px solid #667eea; opacity: 0; transition: opacity 0.3s ease;">
-                            
-                            <!-- Stylish Fallback Avatar -->
-                            <div id="heroFallbackAvatar" class="hero-avatar rounded-circle position-absolute top-0 start-0 w-100 h-100" 
-                                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                        display: flex; align-items: center; justify-content: center; 
-                                        border: 4px solid #667eea; overflow: hidden;">
-                                <!-- Avatar Content -->
-                                <div class="text-center">
-                                    <div style="font-size: 4rem; color: white; font-weight: bold; margin-bottom: 10px;">SA</div>
-                                    <div style="font-size: 1rem; color: rgba(255,255,255,0.8); font-weight: 500;">Software Developer</div>
-                                </div>
-                                <!-- Animated Background Elements -->
-                                <div class="position-absolute floating-circle-1" style="top: 20%; left: 10%; width: 60px; height: 60px; 
-                                     background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                                <div class="position-absolute floating-circle-2" style="bottom: 30%; right: 15%; width: 40px; height: 40px; 
-                                     background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                        <!-- Stylish Avatar -->
+                        <div class="hero-avatar rounded-circle d-inline-block" 
+                             style="width: 300px; height: 300px; 
+                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                    display: flex; align-items: center; justify-content: center; 
+                                    border: 4px solid #667eea; overflow: hidden; position: relative;">
+                            <!-- Avatar Content -->
+                            <div class="text-center">
+                                <div style="font-size: 4rem; color: white; font-weight: bold; margin-bottom: 10px;">SA</div>
+                                <div style="font-size: 1rem; color: rgba(255,255,255,0.8); font-weight: 500;">Software Developer</div>
                             </div>
+                            <!-- Animated Background Elements -->
+                            <div class="position-absolute floating-circle-1" 
+                                 style="top: 20%; left: 10%; width: 60px; height: 60px; 
+                                        background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                            <div class="position-absolute floating-circle-2" 
+                                 style="bottom: 30%; right: 15%; width: 40px; height: 40px; 
+                                        background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                         </div>
                         
                         <!-- Floating Elements Around Profile -->
@@ -119,22 +115,22 @@
                         <h5 class="card-title text-center mb-4">
                             {% if category == 'programming' %}
                                 <i class="fas fa-code gradient-text fa-lg"></i>
-                                <div class="gradient-text">Programming</div>
+                                <div class="gradient-text mt-2">Programming</div>
                             {% elif category == 'web' %}
                                 <i class="fas fa-globe gradient-text fa-lg"></i>
-                                <div class="gradient-text">Web Technologies</div>
+                                <div class="gradient-text mt-2">Web Technologies</div>
                             {% elif category == 'database' %}
                                 <i class="fas fa-database gradient-text fa-lg"></i>
-                                <div class="gradient-text">Databases</div>
+                                <div class="gradient-text mt-2">Databases</div>
                             {% elif category == 'framework' %}
                                 <i class="fas fa-layer-group gradient-text fa-lg"></i>
-                                <div class="gradient-text">Frameworks</div>
+                                <div class="gradient-text mt-2">Frameworks</div>
                             {% elif category == 'tools' %}
                                 <i class="fas fa-tools gradient-text fa-lg"></i>
-                                <div class="gradient-text">Tools & Libraries</div>
+                                <div class="gradient-text mt-2">Tools & Libraries</div>
                             {% else %}
                                 <i class="fas fa-cog gradient-text fa-lg"></i>
-                                <div class="gradient-text">Other</div>
+                                <div class="gradient-text mt-2">Other</div>
                             {% endif %}
                         </h5>
                         {% for skill in skills %}
@@ -156,10 +152,6 @@
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p class="text-muted">Skills will be displayed here when added to the database.</p>
-            </div>
             {% endfor %}
         </div>
     </div>
@@ -177,25 +169,10 @@
             {% for project in featured_projects %}
             <div class="col-md-4 mb-4">
                 <div class="card project-card h-100 fade-in-scale glass">
-                    {% if project.image %}
-                    <div class="position-relative overflow-hidden" style="height: 200px;">
-                        <img src="{{ project.image.url }}" class="card-img-top h-100 w-100" 
-                             style="object-fit: cover; transition: transform 0.3s ease;" 
-                             alt="{{ project.title }}"
-                             onmouseover="this.style.transform='scale(1.1)'"
-                             onmouseout="this.style.transform='scale(1)'"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" 
-                             style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: none;">
-                            <i class="fas fa-code fa-3x text-white"></i>
-                        </div>
-                    </div>
-                    {% else %}
                     <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" 
                          style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                         <i class="fas fa-code fa-3x text-white"></i>
                     </div>
-                    {% endif %}
                     <div class="card-body">
                         <h5 class="card-title gradient-text">{{ project.title }}</h5>
                         <p class="card-text">{{ project.description|truncatewords:20 }}</p>
@@ -228,7 +205,7 @@
 </section>
 {% endif %}
 
-<!-- Recent Experience Section -->
+<!-- Current Experience Section -->
 {% if recent_experience %}
 <section class="recent-experience py-5 position-relative">
     <div class="container">
@@ -259,7 +236,11 @@
                                     <h6 class="gradient-text mb-3">
                                         <i class="fas fa-tools"></i> Technologies
                                     </h6>
-                                    <p class="small text-light">{{ recent_experience.technologies }}</p>
+                                    <div class="technologies">
+                                        {% for tech in recent_experience.tech_list %}
+                                        <span class="badge glass me-1 mb-1">{{ tech }}</span>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -302,21 +283,7 @@
 </section>
 
 <style>
-.description-text {
-    opacity: 1;
-    visibility: visible;
-}
-
-.profile-container {
-    position: relative;
-}
-
-.profile-img {
-    z-index: 2;
-}
-
 .hero-avatar {
-    z-index: 1;
     transition: all 0.3s ease;
     box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
@@ -350,177 +317,60 @@
     animation-delay: 0.5s;
 }
 
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-.fade-in-up, .fade-in-scale {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.progress-bar {
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-}
-
-/* Image loading states */
-.profile-img.loaded {
-    opacity: 1 !important;
-}
-
-.hero-avatar.hidden {
-    opacity: 0;
-    pointer-events: none;
+.technologies .badge {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.3);
 }
 </style>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM loaded, initializing image loading...");
-    
-    const heroProfileImg = document.getElementById('heroProfileImage');
-    const heroFallbackAvatar = document.getElementById('heroFallbackAvatar');
-    
-    // Show fallback avatar by default
-    heroFallbackAvatar.style.opacity = '1';
-    heroFallbackAvatar.style.display = 'flex';
-    
-    // Array of possible image paths
-    const heroImagePaths = [
-        "{% static 'media/images/profile.jpg' %}",
-        "{% static 'images/profile.jpg' %}",
-        "{% static 'img/profile.jpg' %}",
-        "{% static 'assets/images/profile.jpg' %}",
-        "{% static 'media/profile.jpg' %}",
-        "{% static 'profile.jpg' %}",
-        "/media/images/profile.jpg",
-        "/static/media/images/profile.jpg"
-    ];
-    
-    let currentHeroPathIndex = 0;
-    let imageLoaded = false;
-    
-    function tryLoadHeroImage() {
-        if (currentHeroPathIndex < heroImagePaths.length && !imageLoaded) {
-            console.log('Trying to load image from:', heroImagePaths[currentHeroPathIndex]);
-            
-            // Create a new image element to test loading
-            const testImg = new Image();
-            
-            testImg.onload = function() {
-                console.log('Image loaded successfully from:', heroImagePaths[currentHeroPathIndex]);
-                imageLoaded = true;
-                
-                // Set the source and show the real image
-                heroProfileImg.src = heroImagePaths[currentHeroPathIndex];
-                heroProfileImg.style.opacity = '1';
-                heroProfileImg.classList.add('loaded');
-                
-                // Hide the fallback avatar
-                heroFallbackAvatar.style.opacity = '0';
-                setTimeout(() => {
-                    heroFallbackAvatar.style.display = 'none';
-                }, 300);
-            };
-            
-            testImg.onerror = function() {
-                console.log('Failed to load image from:', heroImagePaths[currentHeroPathIndex]);
-                currentHeroPathIndex++;
-                setTimeout(tryLoadHeroImage, 100); // Small delay before trying next path
-            };
-            
-            testImg.src = heroImagePaths[currentHeroPathIndex];
-        } else if (!imageLoaded) {
-            console.log('All image paths failed, keeping fallback avatar visible');
-            // Ensure fallback avatar stays visible
-            heroFallbackAvatar.style.opacity = '1';
-            heroFallbackAvatar.style.display = 'flex';
-        }
-    }
-    
-    // Start trying to load images after a short delay
-    setTimeout(tryLoadHeroImage, 500);
-    
-    // Animate skill progress bars
+    // Animate skill progress bars after page load
     setTimeout(() => {
         document.querySelectorAll(".progress-bar").forEach(function (bar) {
-            let originalValue = parseInt(bar.getAttribute("data-value")) || 0;
-            let decrease = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-            let newValue = Math.max(0, originalValue - decrease);
-
-            // Update percentage text
-            let valueText = bar.closest(".skill-item").querySelector(".skill-value");
-            if (valueText) valueText.textContent = newValue + "%";
-            
-            // Animate the progress bar
-            bar.style.width = newValue + "%";
+            const value = parseInt(bar.getAttribute("data-value")) || 0;
+            bar.style.width = value + "%";
         });
     }, 1000);
 
-    // Add hover effects
-    function addHoverEffects() {
-        const profileElement = imageLoaded ? heroProfileImg : heroFallbackAvatar;
-        
-        profileElement.addEventListener('mouseenter', () => {
-            profileElement.style.transform = 'scale(1.05)';
-        });
-        
-        profileElement.addEventListener('mouseleave', () => {
-            profileElement.style.transform = 'scale(1)';
-        });
-    }
-    
-    // Add hover effects after initial load
-    setTimeout(addHoverEffects, 1000);
-
     // GSAP animations (if available)
-    if (typeof gsap !== 'undefined') {
-        console.log('GSAP available, initializing animations');
-        
-        if (typeof ScrollTrigger !== 'undefined') {
-            gsap.registerPlugin(ScrollTrigger);
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
 
-            gsap.fromTo(".skill-category", 
-                { y: 50, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 0.8,
-                    stagger: 0.2,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: ".skills-section",
-                        start: "top 80%",
-                        end: "bottom 20%",
-                        toggleActions: "play none none reverse"
-                    }
+        // Skills section animation
+        gsap.fromTo(".skill-category", 
+            { y: 50, opacity: 0 },
+            {
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: ".skills-section",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
                 }
-            );
+            }
+        );
 
-            gsap.fromTo(".project-card", 
-                { scale: 0.8, opacity: 0 },
-                {
-                    scale: 1,
-                    opacity: 1,
-                    duration: 0.6,
-                    stagger: 0.2,
-                    ease: "back.out(1.7)",
-                    scrollTrigger: {
-                        trigger: ".featured-projects",
-                        start: "top 80%",
-                        end: "bottom 20%",
-                        toggleActions: "play none none reverse"
-                    }
+        // Projects section animation
+        gsap.fromTo(".project-card", 
+            { scale: 0.8, opacity: 0 },
+            {
+                scale: 1,
+                opacity: 1,
+                duration: 0.6,
+                stagger: 0.2,
+                ease: "back.out(1.7)",
+                scrollTrigger: {
+                    trigger: ".featured-projects",
+                    start: "top 80%",
+                    toggleActions: "play none none reverse"
                 }
-            );
-        }
-    } else {
-        console.log('GSAP not loaded, using basic animations');
+            }
+        );
     }
 });
 </script>
