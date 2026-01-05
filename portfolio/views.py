@@ -210,8 +210,8 @@ def contact(request):
         email = request.POST.get('email', '').strip()
         subject = request.POST.get('subject', '').strip()
         message = request.POST.get('message', '').strip()
-        
-        # Basic validation
+
+    
         if not all([name, email, subject, message]):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -231,36 +231,43 @@ def contact(request):
                 message=message
             )
             
-            # Optional: Send email notification
+            # Send email notification
+            email_sent = False
             try:
-                if hasattr(settings, 'EMAIL_HOST') and settings.EMAIL_HOST:
-                    send_mail(
-                        subject=f'Portfolio Contact: {subject}',
-                        message=f'From: {name} ({email})\n\nMessage:\n{message}',
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=['sartaj.ahamad0502@gmail.com'],
-                        fail_silently=True,
-                    )
-            except Exception:
-                pass  # Email sending is optional
+                send_mail(
+                    subject=f'Portfolio Contact: {subject}',
+                    message=f'From: {name} ({email})\n\nMessage:\n{message}',
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=['sartaj.ahamad0502@gmail.com'],
+                    fail_silently=False,  # Changed to False to catch errors
+                )
+                email_sent = True
+            except Exception as e:
+                # Log the error but don't fail the request
+                print(f"Email sending failed: {str(e)}")
+            
+            success_message = 'Thank you for your message! I\'ll get back to you soon.'
+            if not email_sent:
+                success_message += ' (Note: Email notification may be delayed)'
             
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True, 
-                    'message': 'Thank you for your message! I\'ll get back to you soon.'
+                    'message': success_message
                 })
             else:
-                messages.success(request, 'Thank you for your message! I\'ll get back to you soon.')
+                messages.success(request, success_message)
                 return redirect('contact')
                 
         except Exception as e:
+            print(f"Contact form error: {str(e)}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False, 
                     'message': 'Sorry, there was an error sending your message. Please try again.'
                 })
             else:
-                messages.error(request, 'Sorry, there was an error sending your message. Please try again.')
+                messages.error(request, 'Sorry, there was an error. Please try again.')
                 return redirect('contact')
     
     context = {

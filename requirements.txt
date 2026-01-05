@@ -1,38 +1,10 @@
-# ========================================
-# Core Django + Dependencies
-# ========================================
-Django==5.2.6
 asgiref==3.9.1
+dj-database-url==3.0.1
+Django==5.2.6
+gunicorn==23.0.0
+packaging==25.0
+pillow==11.3.0
+python-decouple==3.8
 sqlparse==0.5.3
 tzdata==2025.2
-packaging==25.0
-Pillow==11.3.0   # For image handling
-
-# ========================================
-# Deployment
-# ========================================
-gunicorn==23.0.0         # WSGI server for production
-whitenoise==6.5.0        # Static file handling in production
-
-# ========================================
-# Database
-# ========================================
-psycopg2-binary>=2.9.7   # PostgreSQL driver
-dj-database-url>=2.1.0   # Parse DATABASE_URL
-python-decouple>=3.8     # Environment variable management
-
-# ========================================
-# Optional Extras
-# (Uncomment when needed)
-# django-redis>=5.3.0               # Redis caching
-# django-cloudinary-storage>=0.3.0  # Cloudinary
-# boto3>=1.28.57                    # AWS S3
-# django-storages>=1.14.1           # Django storage backends
-
-# ========================================
-# Dev-only dependencies (keep separate in requirements-dev.txt)
-# black>=23.7.0
-# flake8>=6.0.0
-# pytest-django>=4.5.2
-# django-debug-toolbar>=4.2.0
-# python-dotenv>=1.0.0
+whitenoise==6.11.0
