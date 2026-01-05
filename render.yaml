@@ -1,0 +1,24 @@
+databases:
+  - name: sartaj_portfolio_db
+    databaseName: sartaj_portfolio_db
+    user: sartaj_portfolio_user
+
+services:
+  - type: web
+    name: sartaj-portfolio
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn sartaj_portfolio.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sartaj_portfolio_db
+          property: connectionString
