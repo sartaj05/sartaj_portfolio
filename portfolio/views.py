@@ -4,22 +4,27 @@ from django.core.mail import send_mail
 from django.conf import settings
 from .models import Project, Experience, Skill, Contact
 from django.http import JsonResponse
+from django.db.utils import OperationalError, ProgrammingError
 from collections import defaultdict
 import datetime
 
 def get_skills_by_category():
     """Helper function to organize skills by category"""
-    skills_by_category = defaultdict(list)
-    skills = Skill.objects.all().order_by('category', 'name')
-    
-    # If no skills in database, return default skills
-    if not skills.exists():
+    try:
+        skills_by_category = defaultdict(list)
+        skills = Skill.objects.all().order_by('category', 'name')
+        
+        # If no skills in database, return default skills
+        if not skills.exists():
+            return get_default_skills()
+        
+        for skill in skills:
+            skills_by_category[skill.category].append(skill)
+        
+        return dict(skills_by_category)
+    except (OperationalError, ProgrammingError):
+        # Database tables don't exist yet, return defaults
         return get_default_skills()
-    
-    for skill in skills:
-        skills_by_category[skill.category].append(skill)
-    
-    return dict(skills_by_category)
 
 def get_default_skills():
     """Return default skills if none exist in database"""
@@ -148,15 +153,22 @@ def get_default_experiences():
 
 def index(request):
     # Get projects
-    featured_projects = Project.objects.filter(is_featured=True)[:3]
-    if not featured_projects.exists():
+    try:
+        featured_projects = Project.objects.filter(is_featured=True)[:3]
+        if not featured_projects.exists():
+            featured_projects = get_default_projects()[:3]
+    except (OperationalError, ProgrammingError):
         featured_projects = get_default_projects()[:3]
     
     # Get experience (most recent)
-    recent_experience = Experience.objects.first()
-    if not recent_experience:
+    try:
+        recent_experience = Experience.objects.first()
+        if not recent_experience:
+            recent_experiences = get_default_experiences()
+            recent_experience = recent_experiences[0]
+    except (OperationalError, ProgrammingError):
         recent_experiences = get_default_experiences()
-        recent_experience = recent_experiences[0]  # Get the first (most recent) experience
+        recent_experience = recent_experiences[0]
     
     # Get skills
     skills_by_category = get_skills_by_category()
@@ -179,10 +191,13 @@ def about(request):
     return render(request, 'portfolio/about.html', context)
 
 def projects(request):
-    all_projects = Project.objects.all()
-    
-    # If no projects in database, use default
-    if not all_projects.exists():
+    try:
+        all_projects = Project.objects.all()
+        
+        # If no projects in database, use default
+        if not all_projects.exists():
+            all_projects = get_default_projects()
+    except (OperationalError, ProgrammingError):
         all_projects = get_default_projects()
     
     context = {
@@ -192,10 +207,13 @@ def projects(request):
     return render(request, 'portfolio/projects.html', context)
 
 def experience(request):
-    experiences = Experience.objects.all().order_by('-order')
-    
-    # If no experiences in database, use default
-    if not experiences.exists():
+    try:
+        experiences = Experience.objects.all().order_by('-order')
+        
+        # If no experiences in database, use default
+        if not experiences.exists():
+            experiences = get_default_experiences()
+    except (OperationalError, ProgrammingError):
         experiences = get_default_experiences()
     
     context = {
@@ -211,7 +229,6 @@ def contact(request):
         subject = request.POST.get('subject', '').strip()
         message = request.POST.get('message', '').strip()
 
-    
         if not all([name, email, subject, message]):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -223,13 +240,17 @@ def contact(request):
                 return redirect('contact')
         
         try:
-            # Save to database
-            contact = Contact.objects.create(
-                name=name,
-                email=email,
-                subject=subject,
-                message=message
-            )
+            # Try to save to database
+            try:
+                contact = Contact.objects.create(
+                    name=name,
+                    email=email,
+                    subject=subject,
+                    message=message
+                )
+            except (OperationalError, ProgrammingError):
+                # Database not available, skip saving
+                print("Database not available - contact message not saved")
             
             # Send email notification
             email_sent = False
@@ -239,7 +260,7 @@ def contact(request):
                     message=f'From: {name} ({email})\n\nMessage:\n{message}',
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=['sartaj.ahamad0502@gmail.com'],
-                    fail_silently=False,  # Changed to False to catch errors
+                    fail_silently=False,
                 )
                 email_sent = True
             except Exception as e:
