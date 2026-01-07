@@ -224,6 +224,17 @@ def experience(request):
         'current_year': datetime.datetime.now().year,
     }
     return render(request, 'portfolio/experience.html', context)
+# portfolio/views.py
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
+from django.http import JsonResponse
+import datetime
+import logging
+
+logger = logging.getLogger(__name__)
+
 def contact(request):
     if request.method == 'POST':
         name = request.POST.get('name', '').strip()
@@ -239,66 +250,36 @@ def contact(request):
                 messages.error(request, 'All fields are required.')
                 return redirect('contact')
 
-        contact_saved = False
         email_sent = False
 
-        # --- Save contact safely ---
-        try:
-            contact = Contact.objects.create(
-                name=name,
-                email=email,
-                subject=subject,
-                message=message
-            )
-            contact_saved = True
-            logger.info(f"Contact saved: {name} ({email})")
-        except Exception as db_error:
-            logger.error(f"Failed to save contact: {db_error}")
-
-        # --- Send email safely ---
+        # Try to send email
         try:
             if settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD:
-                # Wrap send_mail in try/except to prevent crash
-                try:
-                    send_mail(
-                        subject=f'Portfolio Contact: {subject}',
-                        message=f'From: {name} ({email})\n\nMessage:\n{message}',
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[settings.DEFAULT_FROM_EMAIL],
-                        fail_silently=False,
-                    )
-                    email_sent = True
-                    logger.info("Email sent successfully")
-                except Exception as e:
-                    logger.error(f"Email failed: {e}")
+                send_mail(
+                    subject=f'Portfolio Contact: {subject}',
+                    message=f'From: {name} ({email})\n\nMessage:\n{message}',
+                    from_email=settings.DEFAULT_FROM_EMAIL or settings.EMAIL_HOST_USER,
+                    recipient_list=['sartaj.ahamad0502@gmail.com'],  # Your email
+                    fail_silently=False,
+                )
+                email_sent = True
+                logger.info(f"Contact email sent successfully from {name} ({email})")
             else:
-                logger.warning("Email credentials not configured, skipping email")
+                logger.warning("Email credentials not configured. Message not sent.")
         except Exception as e:
-            logger.error(f"Unexpected email error: {e}")
+            logger.error(f"Failed to send contact email: {str(e)}")
 
-        # --- Prepare response ---
-        success_message = 'Thank you for your message! I\'ll get back to you soon.'
-        if contact_saved and not email_sent:
-            success_message += ' (Email not sent)'
-        if not contact_saved and email_sent:
-            success_message += ' (Saved to DB failed, but email sent)'
-        if not contact_saved and not email_sent:
-            success_message += ' (Both saving and email failed, check logs)'
+        # Response message
+        success_message = "Thank you for your message! I’ll get back to you soon."
+        if not email_sent:
+            success_message += " (But email could not be sent, check logs.)"
 
-        # --- Return JSON for AJAX ---
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({
-                'success': True,
-                'message': success_message,
-                'contact_saved': contact_saved,
-                'email_sent': email_sent
-            })
-
-        # --- Normal form submission ---
-        messages.success(request, success_message)
-        return redirect('contact')
+            return JsonResponse({'success': email_sent, 'message': success_message})
+        else:
+            messages.success(request, success_message)
+            return redirect('contact')
 
     # GET request
-    return render(request, 'portfolio/contact.html', {
-        'current_year': datetime.datetime.now().year,
-    })
+    context = {'current_year': datetime.datetime.now().year}
+    return render(request, 'portfolio/contact.html', context)
