@@ -256,16 +256,14 @@ def contact(request):
                     message=message
                 )
                 contact_saved = True
-                print(f"Contact saved successfully: {name} - {email}")
+                logger.info(f"Contact saved successfully: {name} - {email}")
             except (OperationalError, ProgrammingError) as db_error:
-                print(f"Database error (contact not saved): {str(db_error)}")
-                # Don't fail - continue to try sending email
+                logger.warning(f"Database error (contact not saved): {str(db_error)}")
             except Exception as db_error:
-                print(f"Unexpected database error: {str(db_error)}")
+                logger.error(f"Unexpected database error: {str(db_error)}")
             
             # Try to send email notification
             try:
-                # Check if email settings are configured
                 if settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD:
                     send_mail(
                         subject=f'Portfolio Contact: {subject}',
@@ -275,11 +273,11 @@ def contact(request):
                         fail_silently=False,
                     )
                     email_sent = True
-                    print("Email sent successfully")
+                    logger.info("Email sent successfully")
                 else:
-                    print("Email credentials not configured - skipping email send")
+                    logger.warning("Email credentials not configured")
             except Exception as email_error:
-                print(f"Email sending failed: {str(email_error)}")
+                logger.error(f"Email sending failed: {str(email_error)}")
             
             # Prepare success message
             if contact_saved or email_sent:
@@ -287,18 +285,16 @@ def contact(request):
                 if not email_sent:
                     success_message += ' Your message has been received.'
             else:
-                # Even if nothing was saved/sent, show success to user
-                # (store message in session/logs for manual review)
                 success_message = 'Thank you for your message! I\'ll get back to you soon.'
-                print(f"MANUAL REVIEW NEEDED - Contact from: {name} ({email})")
-                print(f"Subject: {subject}")
-                print(f"Message: {message}")
+                logger.warning(f"MANUAL REVIEW NEEDED - Contact from: {name} ({email})")
+                logger.warning(f"Subject: {subject}")
+                logger.warning(f"Message: {message}")
             
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True, 
                     'message': success_message,
-                    'db_saved': db_saved,
+                    'contact_saved': contact_saved,  # ✅ Fixed variable name
                     'email_sent': email_sent
                 })
             else:
@@ -306,8 +302,7 @@ def contact(request):
                 return redirect('contact')
                 
         except Exception as e:
-            print(f"Unexpected error in contact form: {str(e)}")
-            # Still show success to user - log for manual follow-up
+            logger.error(f"Unexpected error in contact form: {str(e)}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True, 

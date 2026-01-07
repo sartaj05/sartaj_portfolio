@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from decouple import config
 import dj_database_url
 
 # --------------------------------------------------
@@ -11,8 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 # Security
 # --------------------------------------------------
-SECRET_KEY = config("SECRET_KEY", default="unsafe-secret-key")
-DEBUG = config("DEBUG", default=False, cast=bool)
+SECRET_KEY = "your-secret-key-here"   # ❗ change once and keep safe
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -51,7 +50,7 @@ MIDDLEWARE = [
 ]
 
 # --------------------------------------------------
-# URL / WSGI
+# URLs / WSGI
 # --------------------------------------------------
 ROOT_URLCONF = "sartaj_portfolio.urls"
 
@@ -77,28 +76,15 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# Database
+# Database (PostgreSQL - Render)
 # --------------------------------------------------
-# Use DATABASE_URL if available (production), otherwise SQLite (development)
-DATABASE_URL = config("DATABASE_URL", default=None)
-
-if DATABASE_URL:
-    # Production - use PostgreSQL
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
-else:
-    # Development - use SQLite
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.parse(
+        "postgresql://user:password@host:port/database",  # 🔴 replace with Render DB URL
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
+}
 
 # --------------------------------------------------
 # Password Validation
@@ -124,14 +110,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# Only include STATICFILES_DIRS if the directory exists
-# This prevents errors during collectstatic on Render
 if os.path.exists(BASE_DIR / "static"):
     STATICFILES_DIRS = [BASE_DIR / "static"]
 else:
     STATICFILES_DIRS = []
 
-# Updated for Django 4.2+ compatibility
 STORAGES = {
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -150,50 +133,58 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # --------------------------------------------------
-# Email Configuration (Contact Form)
+# Email Configuration (Gmail SMTP)
 # --------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_USER = "sartaj.ahamad0502@gmail.com"
+EMAIL_HOST_PASSWORD = "nvto nhdv dtir gofs" 
+DEFAULT_FROM_EMAIL = "sartaj.ahamad0502@gmail.com"
 
 # --------------------------------------------------
 # Security (Production)
 # --------------------------------------------------
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = "DENY"
-    
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
 # --------------------------------------------------
-# Logging Configuration (for debugging on Render)
+# Logging Configuration
 # --------------------------------------------------
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {message}",
+            "style": "{",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
 }
+
+# --------------------------------------------------
+# Create logs directory
+# --------------------------------------------------
+LOGS_DIR = BASE_DIR / "logs"
+if not LOGS_DIR.exists():
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
