@@ -234,85 +234,71 @@ def contact(request):
         # Validate required fields
         if not all([name, email, subject, message]):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': False, 
-                    'message': 'All fields are required.'
-                })
+                return JsonResponse({'success': False, 'message': 'All fields are required.'})
             else:
                 messages.error(request, 'All fields are required.')
                 return redirect('contact')
-        
-        # Initialize flags
+
         contact_saved = False
         email_sent = False
-        
+
+        # --- Save contact safely ---
         try:
-            # Try to save to database (if available)
-            try:
-                contact = Contact.objects.create(
-                    name=name,
-                    email=email,
-                    subject=subject,
-                    message=message
-                )
-                contact_saved = True
-                logger.info(f"Contact saved successfully: {name} - {email}")
-            except (OperationalError, ProgrammingError) as db_error:
-                logger.warning(f"Database error (contact not saved): {str(db_error)}")
-            except Exception as db_error:
-                logger.error(f"Unexpected database error: {str(db_error)}")
-            
-            # Try to send email notification
-            try:
-                if settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD:
+            contact = Contact.objects.create(
+                name=name,
+                email=email,
+                subject=subject,
+                message=message
+            )
+            contact_saved = True
+            logger.info(f"Contact saved: {name} ({email})")
+        except Exception as db_error:
+            logger.error(f"Failed to save contact: {db_error}")
+
+        # --- Send email safely ---
+        try:
+            if settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD:
+                # Wrap send_mail in try/except to prevent crash
+                try:
                     send_mail(
                         subject=f'Portfolio Contact: {subject}',
                         message=f'From: {name} ({email})\n\nMessage:\n{message}',
                         from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=['sartaj.ahamad0502@gmail.com'],
+                        recipient_list=[settings.DEFAULT_FROM_EMAIL],
                         fail_silently=False,
                     )
                     email_sent = True
                     logger.info("Email sent successfully")
-                else:
-                    logger.warning("Email credentials not configured")
-            except Exception as email_error:
-                logger.error(f"Email sending failed: {str(email_error)}")
-            
-            # Prepare success message
-            if contact_saved or email_sent:
-                success_message = 'Thank you for your message! I\'ll get back to you soon.'
-                if not email_sent:
-                    success_message += ' Your message has been received.'
+                except Exception as e:
+                    logger.error(f"Email failed: {e}")
             else:
-                success_message = 'Thank you for your message! I\'ll get back to you soon.'
-                logger.warning(f"MANUAL REVIEW NEEDED - Contact from: {name} ({email})")
-                logger.warning(f"Subject: {subject}")
-                logger.warning(f"Message: {message}")
-            
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True, 
-                    'message': success_message,
-                    'contact_saved': contact_saved,  # ✅ Fixed variable name
-                    'email_sent': email_sent
-                })
-            else:
-                messages.success(request, success_message)
-                return redirect('contact')
-                
+                logger.warning("Email credentials not configured, skipping email")
         except Exception as e:
-            logger.error(f"Unexpected error in contact form: {str(e)}")
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True, 
-                    'message': 'Thank you for your message! I\'ll get back to you soon.'
-                })
-            else:
-                messages.success(request, 'Thank you for your message! I\'ll get back to you soon.')
-                return redirect('contact')
-    
-    context = {
+            logger.error(f"Unexpected email error: {e}")
+
+        # --- Prepare response ---
+        success_message = 'Thank you for your message! I\'ll get back to you soon.'
+        if contact_saved and not email_sent:
+            success_message += ' (Email not sent)'
+        if not contact_saved and email_sent:
+            success_message += ' (Saved to DB failed, but email sent)'
+        if not contact_saved and not email_sent:
+            success_message += ' (Both saving and email failed, check logs)'
+
+        # --- Return JSON for AJAX ---
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': True,
+                'message': success_message,
+                'contact_saved': contact_saved,
+                'email_sent': email_sent
+            })
+
+        # --- Normal form submission ---
+        messages.success(request, success_message)
+        return redirect('contact')
+
+    # GET request
+    return render(request, 'portfolio/contact.html', {
         'current_year': datetime.datetime.now().year,
-    }
-    return render(request, 'portfolio/contact.html', context)
+    })
