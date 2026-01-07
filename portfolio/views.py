@@ -7,6 +7,9 @@ from django.http import JsonResponse
 from django.db.utils import OperationalError, ProgrammingError
 from collections import defaultdict
 import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_skills_by_category():
     """Helper function to organize skills by category"""
@@ -229,6 +232,7 @@ def contact(request):
         subject = request.POST.get('subject', '').strip()
         message = request.POST.get('message', '').strip()
 
+        # Validate form fields
         if not all([name, email, subject, message]):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
@@ -239,8 +243,12 @@ def contact(request):
                 messages.error(request, 'All fields are required.')
                 return redirect('contact')
         
+        # Variables to track success
+        db_saved = False
+        email_sent = False
+        
         try:
-            # Try to save to database
+            # Try to save to database (if available)
             try:
                 contact = Contact.objects.create(
                     name=name,
@@ -248,47 +256,78 @@ def contact(request):
                     subject=subject,
                     message=message
                 )
-            except (OperationalError, ProgrammingError):
-                # Database not available, skip saving
-                print("Database not available - contact message not saved")
+                db_saved = True
+                logger.info(f"Contact message saved to database from {name} ({email})")
+            except (OperationalError, ProgrammingError) as db_error:
+                logger.warning(f"Database not available - contact message not saved: {db_error}")
+                db_saved = False
             
-            # Send email notification
-            email_sent = False
+            # Try to send email notification
             try:
-                send_mail(
-                    subject=f'Portfolio Contact: {subject}',
-                    message=f'From: {name} ({email})\n\nMessage:\n{message}',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=['sartaj.ahamad0502@gmail.com'],
-                    fail_silently=False,
-                )
-                email_sent = True
-            except Exception as e:
-                # Log the error but don't fail the request
-                print(f"Email sending failed: {str(e)}")
+                # Check if email settings are configured
+                if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+                    logger.warning("Email settings not configured. Skipping email notification.")
+                else:
+                    send_mail(
+                        subject=f'Portfolio Contact: {subject}',
+                        message=f'''
+New Contact Form Submission
+============================
+
+From: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+
+-----------------------------
+Sent from Portfolio Contact Form
+                        ''',
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=['sartaj.ahamad0502@gmail.com'],
+                        fail_silently=False,
+                    )
+                    email_sent = True
+                    logger.info(f"Contact email sent successfully from {name} ({email})")
+            except Exception as email_error:
+                logger.error(f"Email sending failed: {email_error}")
+                email_sent = False
             
-            success_message = 'Thank you for your message! I\'ll get back to you soon.'
-            if not email_sent:
-                success_message += ' (Note: Email notification may be delayed)'
+            # Prepare success message based on what worked
+            if db_saved and email_sent:
+                success_message = 'Thank you for your message! It has been saved and I\'ll get back to you soon.'
+            elif email_sent:
+                success_message = 'Thank you for your message! Email sent successfully. I\'ll get back to you soon.'
+            elif db_saved:
+                success_message = 'Thank you for your message! It has been saved. I\'ll get back to you soon.'
+            else:
+                # Neither worked, but we still want to acknowledge the user
+                success_message = 'Thank you for your message! Please note: Email delivery may be delayed. For urgent matters, please email directly at sartaj.ahamad0502@gmail.com'
+                logger.warning(f"Contact form submitted but neither database nor email worked for {name} ({email})")
             
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True, 
-                    'message': success_message
+                    'message': success_message,
+                    'db_saved': db_saved,
+                    'email_sent': email_sent
                 })
             else:
                 messages.success(request, success_message)
                 return redirect('contact')
                 
         except Exception as e:
-            print(f"Contact form error: {str(e)}")
+            logger.error(f"Unexpected error in contact form: {str(e)}")
+            error_message = 'Sorry, there was an error processing your message. Please try emailing directly at sartaj.ahamad0502@gmail.com'
+            
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False, 
-                    'message': 'Sorry, there was an error sending your message. Please try again.'
+                    'message': error_message
                 })
             else:
-                messages.error(request, 'Sorry, there was an error. Please try again.')
+                messages.error(request, error_message)
                 return redirect('contact')
     
     context = {
