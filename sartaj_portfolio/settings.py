@@ -80,7 +80,7 @@ TEMPLATES = [
 # --------------------------------------------------
 DATABASES = {
     "default": dj_database_url.parse(
-        "postgresql://user:password@host:port/database",  # 🔴 replace with Render DB URL
+        "postgresql://sartaj_portfolio:J8IiJ7E1DFDUE94ivYpiO8mR2bkQAQyr@dpg-d5el0ca4d50c73c5qs2g-a/sartaj_portfolio",
         conn_max_age=600,
         conn_health_checks=True,
     )
