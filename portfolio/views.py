@@ -224,10 +224,9 @@ def experience(request):
         'current_year': datetime.datetime.now().year,
     }
     return render(request, 'portfolio/experience.html', context)
-# portfolio/views.py
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 from django.http import JsonResponse
 import datetime
@@ -242,7 +241,6 @@ def contact(request):
         subject = request.POST.get('subject', '').strip()
         message = request.POST.get('message', '').strip()
 
-        # Validate required fields
         if not all([name, email, subject, message]):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': False, 'message': 'All fields are required.'})
@@ -252,27 +250,28 @@ def contact(request):
 
         email_sent = False
 
-        # Try to send email
+        # Safely attempt to send email
         try:
             if settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD:
                 send_mail(
                     subject=f'Portfolio Contact: {subject}',
                     message=f'From: {name} ({email})\n\nMessage:\n{message}',
                     from_email=settings.DEFAULT_FROM_EMAIL or settings.EMAIL_HOST_USER,
-                    recipient_list=['sartaj.ahamad0502@gmail.com'],  # Your email
-                    fail_silently=False,
+                    recipient_list=['sartaj.ahamad0502@gmail.com'],
+                    fail_silently=True,  # ✅ Important to avoid crashing
                 )
                 email_sent = True
-                logger.info(f"Contact email sent successfully from {name} ({email})")
+                logger.info(f"Email sent successfully from {name} ({email})")
             else:
                 logger.warning("Email credentials not configured. Message not sent.")
+        except BadHeaderError:
+            logger.error("Invalid header found when sending email")
         except Exception as e:
-            logger.error(f"Failed to send contact email: {str(e)}")
+            logger.error(f"Failed to send contact email: {e}")
 
-        # Response message
         success_message = "Thank you for your message! I’ll get back to you soon."
         if not email_sent:
-            success_message += " (But email could not be sent, check logs.)"
+            success_message += " (Email could not be sent, check logs.)"
 
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': email_sent, 'message': success_message})
@@ -280,6 +279,5 @@ def contact(request):
             messages.success(request, success_message)
             return redirect('contact')
 
-    # GET request
     context = {'current_year': datetime.datetime.now().year}
     return render(request, 'portfolio/contact.html', context)

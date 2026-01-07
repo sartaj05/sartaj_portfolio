@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import dj_database_url
 
 # --------------------------------------------------
 # Base Directory
@@ -10,13 +9,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 # Security
 # --------------------------------------------------
-SECRET_KEY = "your-secret-key-here"   # ❗ change once and keep safe
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-secret-key-here")  # ❗ Change and keep safe
 DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "sartaj-portfolio-4.onrender.com",
+    "sartaj-portfolio.onrender.com",
     ".onrender.com",
 ]
 
@@ -30,7 +29,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "portfolio",
 ]
 
@@ -40,7 +38,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -53,7 +50,6 @@ MIDDLEWARE = [
 # URLs / WSGI
 # --------------------------------------------------
 ROOT_URLCONF = "sartaj_portfolio.urls"
-
 WSGI_APPLICATION = "sartaj_portfolio.wsgi.application"
 
 # --------------------------------------------------
@@ -76,15 +72,10 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# Database (PostgreSQL - Render)
+# Database (Optional)
 # --------------------------------------------------
-DATABASES = {
-    "default": dj_database_url.parse(
-        "postgresql://sartaj_portfolio:J8IiJ7E1DFDUE94ivYpiO8mR2bkQAQyr@dpg-d5el0ca4d50c73c5qs2g-a/sartaj_portfolio",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# If you do not want database at all, you can leave this as empty dictionary
+DATABASES = {}
 
 # --------------------------------------------------
 # Password Validation
@@ -110,10 +101,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-if os.path.exists(BASE_DIR / "static"):
-    STATICFILES_DIRS = [BASE_DIR / "static"]
-else:
-    STATICFILES_DIRS = []
+STATICFILES_DIRS = [BASE_DIR / "static"] if os.path.exists(BASE_DIR / "static") else []
 
 STORAGES = {
     "staticfiles": {
@@ -132,19 +120,21 @@ MEDIA_ROOT = BASE_DIR / "media"
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# --------------------------------------------------
+# Email Configuration
+# --------------------------------------------------
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or EMAIL_HOST_USER or "noreply@sartaj-portfolio-4.onrender.com"
 
-# Fallback for local testing
-if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "smtp.gmail.com"
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+else:
+    # Fallback for local testing
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-
 
 # --------------------------------------------------
 # Security (Production)
