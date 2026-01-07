@@ -15,7 +15,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "sartaj-portfolio.onrender.com",
+    "sartaj-portfolio5.onrender.com",
     ".onrender.com",
 ]
 
