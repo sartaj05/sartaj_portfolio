@@ -134,7 +134,7 @@ def get_default_experiences():
         type('Experience', (), {
             'company': 'Createch Software Pvt. Ltd.',
             'position': 'Jr. Software Engineer',
-            'duration': 'May 2024 - Present',
+            'duration': 'Feb 2024 - Present',
             'location': 'Ministry of Defence (ASDC)',
             'description': 'Working on enterprise-level solutions using cutting-edge technologies. Involved in developing scalable backend applications using Python, Django, and FastAPI. Contributing to innovative projects in the defense sector with focus on performance optimization and test-driven development.',
             'technologies': 'Python, Django, FastAPI, PostgreSQL, Git, Docker',
