@@ -241,43 +241,92 @@ def contact(request):
         subject = request.POST.get('subject', '').strip()
         message = request.POST.get('message', '').strip()
 
+        # Validate all fields
         if not all([name, email, subject, message]):
+            error_msg = 'All fields are required.'
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'message': 'All fields are required.'})
+                return JsonResponse({'success': False, 'message': error_msg})
             else:
-                messages.error(request, 'All fields are required.')
+                messages.error(request, error_msg)
                 return redirect('contact')
 
         email_sent = False
+        error_occurred = False
 
-        # Safely attempt to send email
+        # Try to send email
         try:
-            if settings.EMAIL_HOST_USER and settings.EMAIL_HOST_PASSWORD:
-                send_mail(
-                    subject=f'Portfolio Contact: {subject}',
-                    message=f'From: {name} ({email})\n\nMessage:\n{message}',
-                    from_email=settings.DEFAULT_FROM_EMAIL or settings.EMAIL_HOST_USER,
-                    recipient_list=['sartaj.ahamad0502@gmail.com'],
-                    fail_silently=True,  # ✅ Important to avoid crashing
-                )
-                email_sent = True
-                logger.info(f"Email sent successfully from {name} ({email})")
-            else:
-                logger.warning("Email credentials not configured. Message not sent.")
+            # Check if email is properly configured
+            if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+                logger.warning("Email credentials not configured in environment variables.")
+                logger.info(f"📧 Contact Form Submission (Email not configured):")
+                logger.info(f"   From: {name} ({email})")
+                logger.info(f"   Subject: {subject}")
+                logger.info(f"   Message: {message}")
+                
+                success_msg = "Thank you for your message! I'll get back to you soon. (Note: Email is currently in console mode for development)"
+                
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True, 'message': success_msg})
+                else:
+                    messages.success(request, success_msg)
+                    return redirect('contact')
+            
+            # Compose email
+            email_subject = f'Portfolio Contact: {subject}'
+            email_body = f"""
+New contact form submission from your portfolio website:
+
+Name: {name}
+Email: {email}
+Subject: {subject}
+
+Message:
+{message}
+
+---
+Sent from Portfolio Contact Form
+"""
+            
+            # Send email
+            send_mail(
+                subject=email_subject,
+                message=email_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=['sartaj.ahamad0502@gmail.com'],
+                fail_silently=False,
+            )
+            
+            email_sent = True
+            logger.info(f"✅ Email sent successfully from {name} ({email})")
+            
         except BadHeaderError:
             logger.error("Invalid header found when sending email")
+            error_occurred = True
         except Exception as e:
-            logger.error(f"Failed to send contact email: {e}")
+            logger.error(f"❌ Failed to send contact email: {str(e)}")
+            error_occurred = True
 
-        success_message = "Thank you for your message! I’ll get back to you soon."
-        if not email_sent:
-            success_message += " (Email could not be sent, check logs.)"
-
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': email_sent, 'message': success_message})
+        # Prepare response message
+        if email_sent:
+            success_msg = "Thank you for your message! I'll get back to you soon."
+        elif error_occurred:
+            success_msg = "Your message was received, but there was an issue sending the email notification. I'll still review your message."
         else:
-            messages.success(request, success_message)
+            success_msg = "Thank you for your message!"
+
+        # Return response
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': email_sent or not error_occurred,
+                'message': success_msg
+            })
+        else:
+            if email_sent:
+                messages.success(request, success_msg)
+            else:
+                messages.warning(request, success_msg)
             return redirect('contact')
 
+    # GET request - show form
     context = {'current_year': datetime.datetime.now().year}
     return render(request, 'portfolio/contact.html', context)

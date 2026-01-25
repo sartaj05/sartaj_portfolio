@@ -9,8 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 # Security
 # --------------------------------------------------
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-secret-key-here")  # ❗ Change and keep safe
-DEBUG = False
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-secret-key-here-change-in-production")
+DEBUG = os.environ.get("DEBUG", "True") == "True"  # Default True for development
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -74,7 +74,6 @@ TEMPLATES = [
 # --------------------------------------------------
 # Database (Optional)
 # --------------------------------------------------
-# If you do not want database at all, you can leave this as empty dictionary
 DATABASES = {}
 
 # --------------------------------------------------
@@ -123,32 +122,40 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # --------------------------------------------------
 # Email Configuration
 # --------------------------------------------------
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL") or EMAIL_HOST_USER or "noreply@sartaj-portfolio-4.onrender.com"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@example.com")
 
-if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = "smtp.gmail.com"
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-else:
-    # Fallback for local testing
+# For development/testing without email credentials
+if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    print("⚠️  WARNING: Email credentials not configured. Using console backend for development.")
 
 # --------------------------------------------------
-# Security (Production)
+# Security Settings (Conditional based on DEBUG)
 # --------------------------------------------------
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = "DENY"
-
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+if not DEBUG:
+    # Production security settings
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+else:
+    # Development settings - disable HTTPS redirects
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_HSTS_SECONDS = 0
+    print("🔧 Running in DEBUG mode - HTTPS security disabled for local development")
 
 # --------------------------------------------------
 # Logging Configuration
@@ -171,6 +178,13 @@ LOGGING = {
     "root": {
         "handlers": ["console"],
         "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 
