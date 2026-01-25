@@ -16,7 +16,6 @@ media/
 # Virtual Environment
 portfolio_env/
 venv/
-env/
 
 # IDEs
 .vscode/
@@ -27,7 +26,3 @@ env/
 # OS
 .DS_Store
 Thumbs.db
-
-
-# Environment variables
-.env

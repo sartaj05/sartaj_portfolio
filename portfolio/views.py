@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-from .models import Project, Experience, Skill, Contact
 from django.http import JsonResponse
 from django.db.utils import OperationalError, ProgrammingError
+from .models import Project, Experience, Skill, Contact
 from collections import defaultdict
 import datetime
 import logging
@@ -13,21 +13,23 @@ logger = logging.getLogger(__name__)
 
 def get_skills_by_category():
     """Helper function to organize skills by category"""
+    # Start with defaults
+    skills_by_category = get_default_skills()
+    
     try:
-        skills_by_category = defaultdict(list)
-        skills = Skill.objects.all().order_by('category', 'name')
+        skills = list(Skill.objects.all().order_by('category', 'name'))
         
-        # If no skills in database, return default skills
-        if not skills.exists():
-            return get_default_skills()
-        
-        for skill in skills:
-            skills_by_category[skill.category].append(skill)
-        
-        return dict(skills_by_category)
-    except (OperationalError, ProgrammingError):
-        # Database tables don't exist yet, return defaults
-        return get_default_skills()
+        if skills:
+            # We have database skills, use them instead
+            from collections import defaultdict
+            db_skills = defaultdict(list)
+            for skill in skills:
+                db_skills[skill.category].append(skill)
+            skills_by_category = dict(db_skills)
+    except (OperationalError, ProgrammingError, Exception):
+        pass  # Use default skills
+    
+    return skills_by_category
 
 def get_default_skills():
     """Return default skills if none exist in database"""
@@ -155,23 +157,24 @@ def get_default_experiences():
     ]
 
 def index(request):
-    # Get projects
+    # Get projects - handle no database case
+    featured_projects = get_default_projects()[:3]
     try:
-        featured_projects = Project.objects.filter(is_featured=True)[:3]
-        if not featured_projects.exists():
-            featured_projects = get_default_projects()[:3]
-    except (OperationalError, ProgrammingError):
-        featured_projects = get_default_projects()[:3]
+        db_projects = list(Project.objects.filter(is_featured=True)[:3])
+        if db_projects:
+            featured_projects = db_projects
+    except (OperationalError, ProgrammingError, Exception):
+        pass  # Use default projects
     
-    # Get experience (most recent)
+    # Get experience (most recent) - handle no database case
+    recent_experiences = get_default_experiences()
+    recent_experience = recent_experiences[0]
     try:
-        recent_experience = Experience.objects.first()
-        if not recent_experience:
-            recent_experiences = get_default_experiences()
-            recent_experience = recent_experiences[0]
-    except (OperationalError, ProgrammingError):
-        recent_experiences = get_default_experiences()
-        recent_experience = recent_experiences[0]
+        db_experience = Experience.objects.first()
+        if db_experience:
+            recent_experience = db_experience
+    except (OperationalError, ProgrammingError, Exception):
+        pass  # Use default experience
     
     # Get skills
     skills_by_category = get_skills_by_category()
@@ -194,14 +197,15 @@ def about(request):
     return render(request, 'portfolio/about.html', context)
 
 def projects(request):
+    # Default projects first
+    all_projects = get_default_projects()
+    
     try:
-        all_projects = Project.objects.all()
-        
-        # If no projects in database, use default
-        if not all_projects.exists():
-            all_projects = get_default_projects()
-    except (OperationalError, ProgrammingError):
-        all_projects = get_default_projects()
+        db_projects = list(Project.objects.all())
+        if db_projects:
+            all_projects = db_projects
+    except (OperationalError, ProgrammingError, Exception):
+        pass  # Use default projects
     
     context = {
         'projects': all_projects,
@@ -210,29 +214,21 @@ def projects(request):
     return render(request, 'portfolio/projects.html', context)
 
 def experience(request):
+    # Default experiences first
+    experiences = get_default_experiences()
+    
     try:
-        experiences = Experience.objects.all().order_by('-order')
-        
-        # If no experiences in database, use default
-        if not experiences.exists():
-            experiences = get_default_experiences()
-    except (OperationalError, ProgrammingError):
-        experiences = get_default_experiences()
+        db_experiences = list(Experience.objects.all().order_by('-order'))
+        if db_experiences:
+            experiences = db_experiences
+    except (OperationalError, ProgrammingError, Exception):
+        pass  # Use default experiences
     
     context = {
         'experiences': experiences,
         'current_year': datetime.datetime.now().year,
     }
     return render(request, 'portfolio/experience.html', context)
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.core.mail import send_mail, BadHeaderError
-from django.conf import settings
-from django.http import JsonResponse
-import datetime
-import logging
-
-logger = logging.getLogger(__name__)
 
 def contact(request):
     if request.method == 'POST':

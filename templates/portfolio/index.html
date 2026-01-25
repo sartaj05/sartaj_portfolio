@@ -1,6 +1,42 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+.hero-avatar {
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.hero-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+}
+
+.floating-circle-1 {
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-circle-2 {
+    animation: float 4s ease-in-out infinite reverse;
+}
+
+.floating-tech {
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-tech:nth-child(2) { animation-delay: 1s; }
+.floating-tech:nth-child(3) { animation-delay: 2s; }
+.floating-tech:nth-child(4) { animation-delay: 0.5s; }
+
+.technologies .badge {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Hero Section -->
 <section class="hero-section position-relative">
@@ -8,21 +44,20 @@
         <div class="row align-items-center min-vh-100">
             <div class="col-lg-6">
                 <div class="hero-content fade-in-up">
-                    <h1 class="display-4 fw-bold mb-3 hero-title">
+                    <h1 class="display-4 fw-bold mb-3">
                         Hi, I'm <span class="gradient-text">Sartaj Ahamad</span>
                     </h1>
-                    <h2 class="h3 text-muted mb-4 fade-in-up">
+                    <h2 class="h3 text-muted mb-4">
                         <span class="gradient-text-2">Software Developer</span>
                     </h2>
-                    <p class="lead mb-4 description-text" style="line-height: 1.6; max-width: 600px;">
+                    <p class="lead mb-4" style="line-height: 1.6; max-width: 600px;">
                         A dedicated Software Developer with 1+ year of experience in building robust backend 
                         applications using Python and Django (including Django REST Framework). Recently, I have 
                         been working with FastAPI for the past 2 months, expanding my skills in developing modern 
-                        and efficient APIs. Passionate about creating scalable solutions and contributing to 
-                        innovative projects.
+                        and efficient APIs.
                     </p>
 
-                    <div class="hero-buttons fade-in-up">
+                    <div class="mb-4">
                         <a href="{% url 'projects' %}" class="btn btn-primary btn-lg me-3">
                             <i class="fas fa-folder-open"></i> View Projects
                         </a>
@@ -31,25 +66,18 @@
                         </a>
                     </div>
 
-                    <!-- Quick Stats -->
-                    <div class="row mt-5 fade-in-up">
-                        <div class="col-4">
-                            <div class="text-center">
-                                <h3 class="gradient-text fw-bold mb-0">1+</h3>
-                                <small class="text-muted">Years Experience</small>
-                            </div>
+                    <div class="row mt-5">
+                        <div class="col-4 text-center">
+                            <h3 class="gradient-text fw-bold mb-0">1+</h3>
+                            <small class="text-muted">Years Experience</small>
                         </div>
-                        <div class="col-4">
-                            <div class="text-center">
-                                <h3 class="gradient-text fw-bold mb-0">5+</h3>
-                                <small class="text-muted">Projects</small>
-                            </div>
+                        <div class="col-4 text-center">
+                            <h3 class="gradient-text fw-bold mb-0">5+</h3>
+                            <small class="text-muted">Projects</small>
                         </div>
-                        <div class="col-4">
-                            <div class="text-center">
-                                <h3 class="gradient-text fw-bold mb-0">8+</h3>
-                                <small class="text-muted">Technologies</small>
-                            </div>
+                        <div class="col-4 text-center">
+                            <h3 class="gradient-text fw-bold mb-0">8+</h3>
+                            <small class="text-muted">Technologies</small>
                         </div>
                     </div>
                 </div>
@@ -57,18 +85,15 @@
             <div class="col-lg-6 text-center">
                 <div class="hero-image fade-in-scale">
                     <div class="position-relative d-inline-block">
-                        <!-- Stylish Avatar -->
                         <div class="hero-avatar rounded-circle d-inline-block" 
                              style="width: 300px; height: 300px; 
                                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                    display: flex; align-items: center; justify-content: center; 
+                                    display: flex; align-items-center; justify-content: center; 
                                     border: 4px solid #667eea; overflow: hidden; position: relative;">
-                            <!-- Avatar Content -->
                             <div class="text-center">
                                 <div style="font-size: 4rem; color: white; font-weight: bold; margin-bottom: 10px;">SA</div>
                                 <div style="font-size: 1rem; color: rgba(255,255,255,0.8); font-weight: 500;">Software Developer</div>
                             </div>
-                            <!-- Animated Background Elements -->
                             <div class="position-absolute floating-circle-1" 
                                  style="top: 20%; left: 10%; width: 60px; height: 60px; 
                                         background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
@@ -77,7 +102,6 @@
                                         background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                         </div>
                         
-                        <!-- Floating Elements Around Profile -->
                         <div class="position-absolute floating-tech" style="top: 10%; right: -10%; z-index: 10;">
                             <div class="glass p-2 rounded-3">
                                 <i class="fab fa-python text-primary fa-2x"></i>
@@ -137,15 +161,11 @@
                         <div class="skill-item mb-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="fw-medium">{{ skill.name }}</span>
-                                <span class="text-muted skill-value">{{ skill.proficiency }}%</span>
+                                <span class="text-muted">{{ skill.proficiency }}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" 
-                                     role="progressbar" 
-                                     aria-valuemin="0" aria-valuemax="100"
-                                     data-value="{{ skill.proficiency }}"
-                                     style="width: 0%; transition: width 1s ease-in-out;">
-                                </div>
+                                <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                     data-value="{{ skill.proficiency }}" style="width: 0%;"></div>
                             </div>
                         </div>
                         {% endfor %}
@@ -205,7 +225,7 @@
 </section>
 {% endif %}
 
-<!-- Current Experience Section -->
+<!-- Current Experience -->
 {% if recent_experience %}
 <section class="recent-experience py-5 position-relative">
     <div class="container">
@@ -215,27 +235,19 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <div class="card experience-card fade-in-scale glass">
+                <div class="card fade-in-scale glass">
                     <div class="card-body p-5">
                         <div class="row">
                             <div class="col-md-8">
-                                <h4 class="card-title gradient-text mb-3">{{ recent_experience.position }}</h4>
+                                <h4 class="gradient-text mb-3">{{ recent_experience.position }}</h4>
                                 <h5 class="text-light mb-3">{{ recent_experience.company }}</h5>
-                                <p class="mb-2">
-                                    <i class="fas fa-calendar gradient-text"></i> 
-                                    <span class="ms-2">{{ recent_experience.duration }}</span>
-                                </p>
-                                <p class="mb-3">
-                                    <i class="fas fa-map-marker-alt gradient-text"></i> 
-                                    <span class="ms-2">{{ recent_experience.location }}</span>
-                                </p>
-                                <p class="card-text lead">{{ recent_experience.description|truncatewords:30 }}</p>
+                                <p class="mb-2"><i class="fas fa-calendar gradient-text"></i> {{ recent_experience.duration }}</p>
+                                <p class="mb-3"><i class="fas fa-map-marker-alt gradient-text"></i> {{ recent_experience.location }}</p>
+                                <p class="lead">{{ recent_experience.description|truncatewords:30 }}</p>
                             </div>
                             <div class="col-md-4">
                                 <div class="glass p-3 rounded">
-                                    <h6 class="gradient-text mb-3">
-                                        <i class="fas fa-tools"></i> Technologies
-                                    </h6>
+                                    <h6 class="gradient-text mb-3"><i class="fas fa-tools"></i> Technologies</h6>
                                     <div class="technologies">
                                         {% for tech in recent_experience.tech_list %}
                                         <span class="badge glass me-1 mb-1">{{ tech }}</span>
@@ -257,7 +269,7 @@
 </section>
 {% endif %}
 
-<!-- Call to Action Section -->
+<!-- CTA Section -->
 <section class="cta-section py-5 position-relative">
     <div class="container">
         <div class="row justify-content-center">
@@ -281,98 +293,39 @@
         </div>
     </div>
 </section>
+{% endblock %}
 
-<style>
-.hero-avatar {
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-}
-
-.hero-avatar:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-}
-
-.floating-circle-1 {
-    animation: float 3s ease-in-out infinite;
-}
-
-.floating-circle-2 {
-    animation: float 4s ease-in-out infinite reverse;
-}
-
-.floating-tech {
-    animation: float 3s ease-in-out infinite;
-}
-
-.floating-tech:nth-child(2) {
-    animation-delay: 1s;
-}
-
-.floating-tech:nth-child(3) {
-    animation-delay: 2s;
-}
-
-.floating-tech:nth-child(4) {
-    animation-delay: 0.5s;
-}
-
-.technologies .badge {
-    background: rgba(102, 126, 234, 0.1);
-    color: #667eea;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-}
-</style>
-
+{% block extra_js %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Animate skill progress bars after page load
-    setTimeout(() => {
-        document.querySelectorAll(".progress-bar").forEach(function (bar) {
-            const value = parseInt(bar.getAttribute("data-value")) || 0;
-            bar.style.width = value + "%";
-        });
-    }, 1000);
-
-    // GSAP animations (if available)
-    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Skills section animation
-        gsap.fromTo(".skill-category", 
-            { y: 50, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                stagger: 0.2,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: ".skills-section",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                }
+// GSAP Animations
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    // Skills animation
+    gsap.fromTo(".skill-category", 
+        { y: 50, opacity: 0 },
+        {
+            y: 0, opacity: 1, duration: 0.8, stagger: 0.2,
+            ease: "power2.out",
+            scrollTrigger: {
+                trigger: ".skills-section",
+                start: "top 80%",
+                toggleActions: "play none none reverse"
             }
-        );
+        }
+    );
 
-        // Projects section animation
-        gsap.fromTo(".project-card", 
-            { scale: 0.8, opacity: 0 },
-            {
-                scale: 1,
-                opacity: 1,
-                duration: 0.6,
-                stagger: 0.2,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: ".featured-projects",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                }
+    // Projects animation
+    gsap.fromTo(".project-card", 
+        { scale: 0.8, opacity: 0 },
+        {
+            scale: 1, opacity: 1, duration: 0.6, stagger: 0.2,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+                trigger: ".featured-projects",
+                start: "top 80%",
+                toggleActions: "play none none reverse"
             }
-        );
-    }
-});
+        }
+    );
+}
 </script>
-
 {% endblock %}

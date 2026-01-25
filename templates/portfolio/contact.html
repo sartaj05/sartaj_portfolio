@@ -1,37 +1,67 @@
+<!-- ========== contact.html ========== -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Contact - Sartaj Ahamad{% endblock %}
 
+{% block extra_css %}
+<style>
+.contact-input {
+    background: rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 15px !important;
+    color: white !important;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.contact-input:focus {
+    background: rgba(255,255,255,0.1) !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+    color: white !important;
+}
+
+.contact-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.hover-lift:hover .icon-box {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.accordion-button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background: rgba(102, 126, 234, 0.2) !important;
+}
+
+.accordion-body {
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.8);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <section class="contact-section" style="padding-top: 140px; padding-bottom: 80px;">
     <div class="container">
-        <!-- Header -->
         <div class="text-center mb-5 fade-in-up">
             <h1 class="display-3 fw-bold gradient-text mb-3">Get In Touch</h1>
             <p class="lead text-muted">Let's collaborate on your next project</p>
-            
-            <!-- Stats -->
-            <div class="row justify-content-center mt-5 g-3">
-                <div class="col-auto">
-                    <div class="glass p-4 rounded-4">
-                        <h3 class="gradient-text fw-bold mb-1">24h</h3>
-                        <small class="text-muted">Response Time</small>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <div class="glass p-4 rounded-4">
-                        <h3 class="gradient-text fw-bold mb-1">100%</h3>
-                        <small class="text-muted">Availability</small>
-                    </div>
-                </div>
-                <div class="col-auto">
-                    <div class="glass p-4 rounded-4">
-                        <h3 class="gradient-text fw-bold mb-1">∞</h3>
-                        <small class="text-muted">Ideas Welcome</small>
-                    </div>
-                </div>
-            </div>
         </div>
         
         <div class="row g-4">
@@ -42,7 +72,6 @@
                         <i class="fas fa-address-card me-2"></i>Contact Information
                     </h3>
                     
-                    <!-- Email -->
                     <div class="card glass mb-3 hover-lift">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
@@ -61,7 +90,6 @@
                         </div>
                     </div>
                     
-                    <!-- Phone -->
                     <div class="card glass mb-3 hover-lift">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
@@ -80,8 +108,7 @@
                         </div>
                     </div>
                     
-                    <!-- GitHub -->
-                    <div class="card glass mb-3 hover-lift">
+                    <div class="card glass mb-4 hover-lift">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div class="icon-box me-3">
@@ -98,40 +125,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- LinkedIn -->
-                    <div class="card glass mb-4 hover-lift">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div class="icon-box me-3">
-                                    <div class="glass p-3 rounded-circle">
-                                        <i class="fab fa-linkedin fa-lg gradient-text"></i>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1 gradient-text">LinkedIn</h6>
-                                    <a href="https://www.linkedin.com/in/sartaj-ahamad-243234215/" class="text-light text-decoration-none" target="_blank">
-                                        linkedin.com/in/sartaj-ahamad
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Actions -->
-                    <div class="glass p-4 rounded-4">
-                        <h6 class="gradient-text mb-3">
-                            <i class="fas fa-bolt me-2"></i>Quick Actions
-                        </h6>
-                        <div class="d-grid gap-2">
-                            <a href="mailto:sartaj.ahamad0502@gmail.com" class="btn btn-outline-primary">
-                                <i class="fas fa-paper-plane me-2"></i>Send Direct Email
-                            </a>
-                            <a href="{% url 'projects' %}" class="btn btn-outline-primary">
-                                <i class="fas fa-folder-open me-2"></i>View My Work
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
             
@@ -143,11 +136,10 @@
                             <i class="fas fa-comment-dots me-2"></i>Send Message
                         </h3>
                         
-                        <!-- Messages -->
                         {% if messages %}
                             {% for message in messages %}
                             <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
-                                <i class="fas fa-check-circle me-2"></i>{{ message }}
+                                {{ message }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                             {% endfor %}
@@ -186,8 +178,7 @@
                             
                             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                                 <small class="text-muted">
-                                    <i class="fas fa-shield-alt gradient-text"></i> 
-                                    Your data is secure
+                                    <i class="fas fa-shield-alt gradient-text"></i> Your data is secure
                                 </small>
                                 <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                                     <i class="fas fa-paper-plane me-2"></i>Send Message
@@ -198,158 +189,16 @@
                 </div>
             </div>
         </div>
-
-        <!-- FAQ Section -->
-        <div class="mt-5 pt-5 fade-in-up">
-            <h3 class="text-center gradient-text fw-bold mb-4">
-                <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
-            </h3>
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="accordion" id="faqAccordion">
-                        <div class="accordion-item glass border-0 mb-3">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button glass collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                    <i class="fas fa-clock gradient-text me-2"></i>
-                                    Response Time?
-                                </button>
-                            </h2>
-                            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    I respond within 24 hours. For urgent inquiries, mention it in your message.
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion-item glass border-0 mb-3">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button glass collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                    <i class="fas fa-briefcase gradient-text me-2"></i>
-                                    Freelance Available?
-                                </button>
-                            </h2>
-                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Yes! Open to freelance projects, especially Python, Django, and FastAPI development.
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="accordion-item glass border-0">
-                            <h2 class="accordion-header">
-                                <button class="accordion-button glass collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                    <i class="fas fa-handshake gradient-text me-2"></i>
-                                    Project Types?
-                                </button>
-                            </h2>
-                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                <div class="accordion-body">
-                                    Backend APIs, web applications, AI/ML integration, and innovative tech solutions.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
+{% endblock %}
 
-<style>
-.contact-input {
-    background: rgba(255,255,255,0.05) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 15px !important;
-    color: white !important;
-    padding: 12px 20px;
-    transition: all 0.3s ease;
-}
-
-.contact-input:focus {
-    background: rgba(255,255,255,0.1) !important;
-    border-color: #667eea !important;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
-    color: white !important;
-    outline: none;
-}
-
-.contact-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.hover-lift {
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-}
-
-.icon-box {
-    transition: all 0.3s ease;
-}
-
-.hover-lift:hover .icon-box {
-    transform: scale(1.1) rotate(5deg);
-}
-
-.accordion-button {
-    background: rgba(255, 255, 255, 0.05) !important;
-    color: white !important;
-    border: none;
-}
-
-.accordion-button:not(.collapsed) {
-    background: rgba(102, 126, 234, 0.2) !important;
-    color: white !important;
-}
-
-.accordion-button::after {
-    filter: invert(1);
-}
-
-.accordion-body {
-    background: rgba(255, 255, 255, 0.02);
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.alert-success {
-    background: rgba(40, 167, 69, 0.2) !important;
-    color: #28a745 !important;
-    border: 1px solid rgba(40, 167, 69, 0.3) !important;
-}
-
-.alert-error {
-    background: rgba(220, 53, 69, 0.2) !important;
-    color: #dc3545 !important;
-    border: 1px solid rgba(220, 53, 69, 0.3) !important;
-}
-</style>
-
+{% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('contactForm');
-    const submitBtn = document.getElementById('submitBtn');
-
-    // Form validation styling
-    form.querySelectorAll('input, textarea').forEach(input => {
-        input.addEventListener('input', () => {
-            if (input.checkValidity()) {
-                input.style.borderColor = 'rgba(40, 167, 69, 0.5)';
-            } else {
-                input.style.borderColor = 'rgba(220, 53, 69, 0.5)';
-            }
-        });
-    });
-
-    // Submit button loading state
-    form.addEventListener('submit', () => {
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
-        submitBtn.disabled = true;
-    });
+document.getElementById('contactForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    btn.disabled = true;
 });
 </script>
 {% endblock %}

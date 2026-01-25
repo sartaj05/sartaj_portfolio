@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from decouple import config
 
 # --------------------------------------------------
 # Base Directory
@@ -9,8 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 # Security
 # --------------------------------------------------
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "your-secret-key-here-change-in-production")
-DEBUG = os.environ.get("DEBUG", "True") == "True"  # Default True for development
+SECRET_KEY = config("DJANGO_SECRET_KEY", default="your-secret-key-here-change-in-production")
+DEBUG = config("DEBUG", default="True") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -126,9 +127,9 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@example.com")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER or "noreply@example.com")
 
 # For development/testing without email credentials
 if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
@@ -136,10 +137,23 @@ if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
     print("⚠️  WARNING: Email credentials not configured. Using console backend for development.")
 
 # --------------------------------------------------
-# Security Settings (Conditional based on DEBUG)
+# Security Settings (Smart HTTPS Detection)
 # --------------------------------------------------
-if not DEBUG:
-    # Production security settings
+# Check if running on production server (Render, Heroku, etc.)
+IS_PRODUCTION = config("ENV", default="") == "production" or not DEBUG
+
+# Get the protocol from environment or auto-detect
+USE_HTTPS = config("USE_HTTPS", default="auto")
+
+if USE_HTTPS == "auto":
+    # Auto-detect: Use HTTPS only in production
+    ENABLE_HTTPS = IS_PRODUCTION
+else:
+    # Manual override from environment variable
+    ENABLE_HTTPS = USE_HTTPS.lower() in ["true", "1", "yes"]
+
+if ENABLE_HTTPS:
+    # HTTPS enabled - Production security settings
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -149,13 +163,17 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    print("🔒 HTTPS mode enabled - Secure settings active")
 else:
-    # Development settings - disable HTTPS redirects
+    # HTTP only - Development settings
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
     SECURE_HSTS_SECONDS = 0
-    print("🔧 Running in DEBUG mode - HTTPS security disabled for local development")
+    SECURE_BROWSER_XSS_FILTER = True  # Keep this for security
+    SECURE_CONTENT_TYPE_NOSNIFF = True  # Keep this for security
+    X_FRAME_OPTIONS = "DENY"  # Keep this for security
+    print("🔧 HTTP mode - Running in development (HTTPS redirects disabled)")
 
 # --------------------------------------------------
 # Logging Configuration

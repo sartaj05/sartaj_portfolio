@@ -10,12 +10,9 @@
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/TextPlugin.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
@@ -30,7 +27,6 @@
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
             color: white;
             overflow-x: hidden;
-            position: relative;
         }
 
         /* Scroll Progress Indicator */
@@ -51,7 +47,7 @@
             transition: width 0.3s ease;
         }
 
-        /* Glass Morphism Effects */
+        /* Glass Morphism */
         .glass {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
@@ -59,7 +55,7 @@
             border-radius: 20px;
         }
 
-        /* Gradient Text Effects */
+        /* Gradient Text */
         .gradient-text {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
@@ -74,7 +70,7 @@
             background-clip: text;
         }
 
-        /* Enhanced Navbar */
+        /* Navbar */
         .navbar {
             backdrop-filter: blur(20px);
             background: rgba(10, 10, 10, 0.8) !important;
@@ -124,7 +120,7 @@
             color: #667eea !important;
         }
 
-        /* Enhanced Buttons */
+        /* Buttons */
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -132,10 +128,7 @@
             border-radius: 50px;
             color: white;
             font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .btn-primary:hover {
@@ -150,7 +143,6 @@
             border-radius: 50px;
             color: white;
             font-weight: 600;
-            cursor: pointer;
             transition: all 0.3s ease;
         }
 
@@ -162,7 +154,7 @@
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
 
-        /* Card Enhancements */
+        /* Cards */
         .card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -178,7 +170,7 @@
             border-color: rgba(102, 126, 234, 0.3);
         }
 
-        /* Progress Bar Animations */
+        /* Progress Bars */
         .progress {
             height: 8px;
             background: rgba(255, 255, 255, 0.1);
@@ -190,21 +182,9 @@
             background: linear-gradient(135deg, #667eea, #764ba2);
             border-radius: 10px;
             transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
         }
 
-        /* Profile Image Enhancement */
-        .profile-img {
-            transition: all 0.3s ease;
-        }
-
-        .profile-img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.2);
-        }
-
-        /* Floating Animation */
+        /* Animations */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
@@ -214,7 +194,7 @@
             animation: float 6s ease-in-out infinite;
         }
 
-        /* Background Particles */
+        /* Particles */
         .particles {
             position: fixed;
             top: 0;
@@ -239,19 +219,15 @@
                 transform: translateY(100vh) rotate(0deg);
                 opacity: 0;
             }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
             100% {
                 transform: translateY(-10vh) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        /* Section Animations */
+        /* Fade Animations */
         .fade-in-up {
             opacity: 0;
             transform: translateY(50px);
@@ -274,19 +250,20 @@
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Footer Links */
+        .footer-link {
+            transition: all 0.3s ease;
+        }
+
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
             .navbar-brand {
                 font-size: 1.2rem;
             }
-            
-            .card {
-                margin-bottom: 1rem;
-            }
         }
+
+        {% block extra_css %}{% endblock %}
     </style>
-    
-    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Scroll Progress Indicator -->
@@ -438,7 +415,7 @@
                     <div class="col-md-6 text-md-end">
                         <p class="mb-0">
                             <small class="text-muted">
-                                Built with <span class="gradient-text">Ã¢ÂÂ¤Ã¯Â¸Â</span> using Django & Modern Web Technologies
+                                Built with <span class="gradient-text">❤️</span> using Django & Modern Web Technologies
                             </small>
                         </p>
                     </div>
@@ -450,9 +427,10 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Base JavaScript -->
     <script>
         // GSAP Plugins
-        gsap.registerPlugin(ScrollTrigger, TextPlugin);
+        gsap.registerPlugin(ScrollTrigger);
 
         // Scroll Progress Indicator
         window.addEventListener('scroll', () => {
@@ -470,50 +448,7 @@
             }
         });
 
-        // Active Navigation Highlighting
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === currentPath || 
-                    (currentPath === '/' && link.getAttribute('href').includes('/'))) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Create particles
-            createParticles();
-
-            // Observe elements for animations
-            document.querySelectorAll('.fade-in-up, .fade-in-scale').forEach(el => {
-                animationObserver.observe(el);
-            });
-
-            // Animate progress bars when they come into view
-            const progressBars = document.querySelectorAll('.progress-bar');
-            const progressObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const bar = entry.target;
-                        const value = bar.getAttribute('data-value') || bar.getAttribute('aria-valuenow');
-                        if (value) {
-                            setTimeout(() => {
-                                bar.style.width = value + '%';
-                            }, 200);
-                        }
-                    }
-                });
-            }, { threshold: 0.5 });
-
-            progressBars.forEach(bar => {
-                bar.style.width = '0%';
-                progressObserver.observe(bar);
-            });
-        });
-
-        // Particle Animation
+        // Create Particles
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 50;
@@ -537,43 +472,73 @@
             });
         }, { threshold: 0.1 });
 
-        // Enhanced smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        // Progress Bar Observer
+        const progressObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const bar = entry.target;
+                    const value = bar.getAttribute('data-value') || bar.getAttribute('aria-valuenow');
+                    if (value) {
+                        setTimeout(() => {
+                            bar.style.width = value + '%';
+                        }, 200);
+                    }
                 }
             });
-        });
+        }, { threshold: 0.5 });
 
-        // Footer link hover effects
-        document.querySelectorAll('.footer-link').forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.transform = 'translateX(5px)';
-                link.style.color = '#667eea';
-            });
+        // Initialize on DOM Load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
             
-            link.addEventListener('mouseleave', () => {
-                link.style.transform = 'translateX(0)';
-                link.style.color = '';
+            // Active Navigation
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href').includes('/'))) {
+                    link.classList.add('active');
+                }
             });
-        });
 
-        // Social links hover effects
-        document.querySelectorAll('.social-links-footer a').forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.transform = 'translateY(-3px) scale(1.1)';
-                link.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+            // Initialize Particles
+            createParticles();
+
+            // Observe animated elements
+            document.querySelectorAll('.fade-in-up, .fade-in-scale').forEach(el => {
+                animationObserver.observe(el);
             });
-            
-            link.addEventListener('mouseleave', () => {
-                link.style.transform = '';
-                link.style.boxShadow = '';
+
+            // Observe progress bars
+            document.querySelectorAll('.progress-bar').forEach(bar => {
+                bar.style.width = '0%';
+                progressObserver.observe(bar);
+            });
+
+            // Footer link hover effects
+            document.querySelectorAll('.footer-link').forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.style.transform = 'translateX(5px)';
+                    link.style.color = '#667eea';
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    link.style.transform = 'translateX(0)';
+                    link.style.color = '';
+                });
+            });
+
+            // Social links hover effects
+            document.querySelectorAll('.social-links-footer a').forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.style.transform = 'translateY(-3px) scale(1.1)';
+                    link.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+                });
+                
+                link.addEventListener('mouseleave', () => {
+                    link.style.transform = '';
+                    link.style.boxShadow = '';
+                });
             });
         });
     </script>

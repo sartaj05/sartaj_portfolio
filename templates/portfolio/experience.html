@@ -1,7 +1,61 @@
+<!-- ========== experience.html ========== -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Experience - Sartaj Ahamad{% endblock %}
+
+{% block extra_css %}
+<style>
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 25%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: calc(25% - 8px);
+    top: 40px;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    border: 3px solid rgba(10, 10, 10, 0.8);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    z-index: 10;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.1); }
+}
+
+.experience-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.experience-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+}
+
+@media (max-width: 768px) {
+    .timeline::before,
+    .timeline-item::before {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="experience-section position-relative" style="padding-top: 120px; padding-bottom: 60px;">
@@ -10,7 +64,6 @@
             <h1 class="display-4 fw-bold gradient-text">Professional Experience</h1>
             <p class="lead text-muted">My career journey and professional growth</p>
             
-            <!-- Experience Stats -->
             <div class="row justify-content-center mt-4">
                 <div class="col-auto">
                     <div class="glass p-3 rounded-3 mx-2">
@@ -41,18 +94,9 @@
                         <div class="timeline-date">
                             <div class="glass p-3 rounded-3 d-inline-block">
                                 <span class="gradient-text fw-bold">{{ experience.duration }}</span>
-                                {% if 'Internship' in experience.location %}
-                                <div class="mt-1">
-                                    <small class="badge glass">
-                                        <i class="fas fa-graduation-cap"></i> Internship
-                                    </small>
-                                </div>
-                                {% endif %}
                                 {% if 'Present' in experience.duration %}
                                 <div class="mt-1">
-                                    <small class="badge glass">
-                                        <i class="fas fa-circle text-success"></i> Current
-                                    </small>
+                                    <small class="badge glass"><i class="fas fa-circle text-success"></i> Current</small>
                                 </div>
                                 {% endif %}
                             </div>
@@ -64,33 +108,21 @@
                             <div class="card-body p-4">
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <h4 class="card-title gradient-text fw-bold mb-2">{{ experience.position }}</h4>
+                                        <h4 class="gradient-text fw-bold mb-2">{{ experience.position }}</h4>
                                         <h5 class="text-light mb-3">
-                                            <i class="fas fa-building gradient-text"></i> 
-                                            {{ experience.company }}
-                                            {% if 'Internship' in experience.location %}
-                                            <span class="text-muted ms-2">({{ experience.location }})</span>
-                                            {% endif %}
+                                            <i class="fas fa-building gradient-text"></i> {{ experience.company }}
                                         </h5>
-                                        
-                                        {% if 'Internship' not in experience.location %}
                                         <div class="mb-3">
                                             <small class="text-muted">
-                                                <i class="fas fa-map-marker-alt gradient-text"></i> 
-                                                <span class="ms-1">{{ experience.location }}</span>
+                                                <i class="fas fa-map-marker-alt gradient-text"></i> {{ experience.location }}
                                             </small>
                                         </div>
-                                        {% endif %}
-                                        
-                                        <p class="card-text lead" style="line-height: 1.6;">{{ experience.description }}</p>
+                                        <p class="lead" style="line-height: 1.6;">{{ experience.description }}</p>
                                     </div>
-                                    
                                     <div class="col-md-4">
                                         <div class="glass p-3 rounded-3 h-100">
-                                            <h6 class="gradient-text mb-3">
-                                                <i class="fas fa-tools"></i> Technologies Used
-                                            </h6>
-                                            <div class="technologies">
+                                            <h6 class="gradient-text mb-3"><i class="fas fa-tools"></i> Technologies</h6>
+                                            <div>
                                                 {% for tech in experience.tech_list %}
                                                 <span class="badge glass me-1 mb-1">{{ tech }}</span>
                                                 {% endfor %}
@@ -103,216 +135,14 @@
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <!-- Default Experiences Display -->
-            <!-- Current Position -->
-            <div class="timeline-item mb-5 fade-in-scale">
-                <div class="row">
-                    <div class="col-md-3 text-md-end mb-3">
-                        <div class="timeline-date">
-                            <div class="glass p-3 rounded-3 d-inline-block">
-                                <span class="gradient-text fw-bold">May 2024 - Present</span>
-                                <div class="mt-1">
-                                    <small class="badge glass">
-                                        <i class="fas fa-circle text-success"></i> Current
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-9">
-                        <div class="card experience-card glass">
-                            <div class="card-body p-4">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h4 class="card-title gradient-text fw-bold mb-2">Jr. Software Engineer</h4>
-                                        <h5 class="text-light mb-3">
-                                            <i class="fas fa-building gradient-text"></i> 
-                                            Createch Software Pvt. Ltd.
-                                        </h5>
-                                        
-                                        <div class="mb-3">
-                                            <small class="text-muted">
-                                                <i class="fas fa-map-marker-alt gradient-text"></i> 
-                                                <span class="ms-1">Ministry of Defence (ASDC)</span>
-                                            </small>
-                                        </div>
-                                        
-                                        <p class="card-text lead" style="line-height: 1.6;">
-                                            Working on enterprise-level solutions using cutting-edge technologies. Involved in developing scalable backend applications using Python, Django, and FastAPI. Contributing to innovative projects in the defense sector with focus on performance optimization and test-driven development.
-                                        </p>
-                                    </div>
-                                    
-                                    <div class="col-md-4">
-                                        <div class="glass p-3 rounded-3 h-100">
-                                            <h6 class="gradient-text mb-3">
-                                                <i class="fas fa-tools"></i> Technologies Used
-                                            </h6>
-                                            <div class="technologies">
-                                                <span class="badge glass me-1 mb-1">Python</span>
-                                                <span class="badge glass me-1 mb-1">Django</span>
-                                                <span class="badge glass me-1 mb-1">FastAPI</span>
-                                                <span class="badge glass me-1 mb-1">PostgreSQL</span>
-                                                <span class="badge glass me-1 mb-1">Git</span>
-                                                <span class="badge glass me-1 mb-1">Docker</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Internship -->
-            <div class="timeline-item mb-5 fade-in-scale">
-                <div class="row">
-                    <div class="col-md-3 text-md-end mb-3">
-                        <div class="timeline-date">
-                            <div class="glass p-3 rounded-3 d-inline-block">
-                                <span class="gradient-text fw-bold">October 2024 - December 2024</span>
-                                <div class="mt-1">
-                                    <small class="badge glass">
-                                        <i class="fas fa-graduation-cap"></i> Internship
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-9">
-                        <div class="card experience-card glass">
-                            <div class="card-body p-4">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h4 class="card-title gradient-text fw-bold mb-2">Software Developer (Python/Django - AI/ML)</h4>
-                                        <h5 class="text-light mb-3">
-                                            <i class="fas fa-building gradient-text"></i> 
-                                            Mobiloitte Technologies
-                                            <span class="text-muted ms-2">(Internship)</span>
-                                        </h5>
-                                        
-                                        <p class="card-text lead" style="line-height: 1.6;">
-                                            Designed and developed scalable backend solutions using Python, Django, and RESTful APIs for web applications. Collaborated with front-end teams to integrate robust APIs and improve application performance. Worked on implementing secure authentication mechanisms using JWT.
-                                        </p>
-                                    </div>
-                                    
-                                    <div class="col-md-4">
-                                        <div class="glass p-3 rounded-3 h-100">
-                                            <h6 class="gradient-text mb-3">
-                                                <i class="fas fa-tools"></i> Technologies Used
-                                            </h6>
-                                            <div class="technologies">
-                                                <span class="badge glass me-1 mb-1">Python</span>
-                                                <span class="badge glass me-1 mb-1">Django</span>
-                                                <span class="badge glass me-1 mb-1">REST API</span>
-                                                <span class="badge glass me-1 mb-1">JWT</span>
-                                                <span class="badge glass me-1 mb-1">AI/ML</span>
-                                                <span class="badge glass me-1 mb-1">PostgreSQL</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             {% endfor %}
         </div>
-        
-        <!-- Training Section -->
-        <div class="training-section mt-5 fade-in-up">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold gradient-text">Training & Development</h2>
-                <p class="lead text-muted">Continuous learning and skill enhancement</p>
-            </div>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card glass">
-                        <div class="card-body p-4">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h5 class="card-title gradient-text fw-bold mb-3">
-                                        <i class="fas fa-graduation-cap"></i> 
-                                        Python Full Stack Development
-                                    </h5>
-                                    <h6 class="text-light mb-3">Q-Spider</h6>
-                                    <p class="mb-3">
-                                        <i class="fas fa-calendar gradient-text"></i> 
-                                        <span class="ms-2">March 2024 – September 2024</span>
-                                    </p>
-                                    <p class="card-text" style="line-height: 1.6;">
-                                        Gained hands-on experience in Python, HTML, SQL, JavaScript for 
-                                        end-to-end web development. Participated in regular mock interviews 
-                                        and coding sessions to improve technical and communication skills.
-                                        This training prepared me for real-world development challenges.
-                                    </p>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="glass p-3 rounded-3">
-                                        <h6 class="gradient-text mb-3">Skills Gained</h6>
-                                        <div class="skills-gained">
-                                            <span class="badge glass me-1 mb-1">Python</span>
-                                            <span class="badge glass me-1 mb-1">HTML</span>
-                                            <span class="badge glass me-1 mb-1">SQL</span>
-                                            <span class="badge glass me-1 mb-1">JavaScript</span>
-                                            <span class="badge glass me-1 mb-1">Full Stack</span>
-                                            <span class="badge glass me-1 mb-1">Mock Interviews</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Key Achievements Section -->
-        <div class="achievements-section mt-5 fade-in-up">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold gradient-text">Key Achievements</h2>
-                <p class="lead text-muted">Notable accomplishments in my career</p>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card glass h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-shield-alt fa-3x gradient-text mb-3"></i>
-                            <h5 class="gradient-text">Secure Authentication</h5>
-                            <p class="text-muted">Successfully implemented JWT-based authentication systems for multiple web applications</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card glass h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-rocket fa-3x gradient-text mb-3"></i>
-                            <h5 class="gradient-text">Performance Optimization</h5>
-                            <p class="text-muted">Improved application performance through database optimization and efficient API design</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card glass h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-users fa-3x gradient-text mb-3"></i>
-                            <h5 class="gradient-text">Team Collaboration</h5>
-                            <p class="text-muted">Successfully collaborated with cross-functional teams to deliver robust backend solutions</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to Action -->
+        <!-- CTA -->
         <div class="text-center mt-5 fade-in-up">
             <div class="glass p-4 rounded-4 d-inline-block">
                 <h4 class="gradient-text mb-3">Let's Build Something Together</h4>
-                <p class="text-muted mb-3">Ready to bring your ideas to life with clean, efficient code and modern technologies</p>
+                <p class="text-muted mb-3">Ready to bring your ideas to life</p>
                 <div class="d-flex flex-wrap justify-content-center gap-3">
                     <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
                         <i class="fas fa-envelope"></i> Contact Me
@@ -320,215 +150,28 @@
                     <a href="{% url 'projects' %}" class="btn btn-outline-primary btn-lg">
                         <i class="fas fa-folder"></i> View Projects
                     </a>
-                    <a href="mailto:sartaj.ahamad0502@gmail.com" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-paper-plane"></i> Send Email
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
 
-<style>
-.timeline {
-    position: relative;
-}
-
-.timeline::before {
-    content: '';
-    position: absolute;
-    left: 25%;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: linear-gradient(to bottom, #667eea, #764ba2);
-    border-radius: 2px;
-}
-
-.timeline-item {
-    position: relative;
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: calc(25% - 8px);
-    top: 40px;
-    width: 16px;
-    height: 16px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border-radius: 50%;
-    border: 3px solid rgba(10, 10, 10, 0.8);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-    z-index: 10;
-    animation: pulse 2s infinite;
-}
-
-/* Current job indicator */
-.timeline-item:first-child::before {
-    animation: pulse 1.5s infinite, glow 2s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.1);
-    }
-}
-
-@keyframes glow {
-    0%, 100% {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-    }
-    50% {
-        background: linear-gradient(135deg, #28a745, #20c997);
-    }
-}
-
-.experience-card {
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.experience-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-    transition: left 0.5s;
-}
-
-.experience-card:hover::before {
-    left: 100%;
-}
-
-.experience-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
-}
-
-.technologies .badge, .skills-gained .badge {
-    background: rgba(102, 126, 234, 0.1);
-    color: #667eea;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    transition: all 0.3s ease;
-}
-
-.technologies .badge:hover, .skills-gained .badge:hover {
-    background: rgba(102, 126, 234, 0.2);
-    transform: translateY(-2px);
-}
-
-/* Status badges */
-.badge.glass {
-    background: rgba(102, 126, 234, 0.1) !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(102, 126, 234, 0.3);
-    font-size: 0.7rem;
-}
-
-@media (max-width: 768px) {
-    .timeline::before,
-    .timeline-item::before {
-        display: none;
-    }
-    
-    .timeline-date {
-    .d-flex.flex-wrap .btn {
-        margin-bottom: 0.5rem;
-    }
-}
-</style>
-
+{% block extra_js %}
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // GSAP animations (if available)
-    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Timeline items stagger animation
-        gsap.fromTo(".timeline-item", 
-            { x: 50, opacity: 0, scale: 0.9 },
-            {
-                x: 0,
-                opacity: 1,
-                scale: 1,
-                duration: 0.8,
-                stagger: 0.2,
-                ease: "back.out(1.7)",
-                scrollTrigger: {
-                    trigger: ".timeline",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                }
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    gsap.fromTo(".timeline-item", 
+        { x: 50, opacity: 0 },
+        {
+            x: 0, opacity: 1, duration: 0.8, stagger: 0.2,
+            ease: "back.out(1.7)",
+            scrollTrigger: {
+                trigger: ".timeline",
+                start: "top 80%",
+                toggleActions: "play none none reverse"
             }
-        );
-
-        // Training section animation
-        gsap.fromTo(".training-section .card", 
-            { y: 50, opacity: 0, rotateX: 45 },
-            {
-                y: 0,
-                opacity: 1,
-                rotateX: 0,
-                duration: 0.8,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: ".training-section",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-
-        // Achievements section animation
-        gsap.fromTo(".achievements-section .card", 
-            { y: 30, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 0.6,
-                stagger: 0.2,
-                ease: "power2.out",
-                scrollTrigger: {
-                    trigger: ".achievements-section",
-                    start: "top 80%",
-                    toggleActions: "play none none reverse"
-                }
-            }
-        );
-    }
-
-    // Enhanced hover effects for experience cards
-    document.querySelectorAll('.experience-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-10px) scale(1.02)';
-            card.style.boxShadow = '0 20px 40px rgba(102, 126, 234, 0.3)';
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateY(0) scale(1)';
-            card.style.boxShadow = '';
-        });
-    });
-
-    // Badge hover effects
-    document.querySelectorAll('.badge').forEach(badge => {
-        badge.addEventListener('mouseenter', () => {
-            badge.style.transform = 'translateY(-2px) scale(1.05)';
-        });
-        
-        badge.addEventListener('mouseleave', () => {
-            badge.style.transform = '';
-        });
-    });
-});
+        }
+    );
+}
 </script>
-
 {% endblock %}
