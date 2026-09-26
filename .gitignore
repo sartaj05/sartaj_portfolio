@@ -1,4 +1,5 @@
 venv
+.venv/
 portfolio_env
 sartaj_portfolio/__pycache__
 portfolio/migrations

@@ -1,189 +1,94 @@
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('siteHeader');
+    const progress = document.getElementById('scrollProgress');
+    const backToTop = document.getElementById('backToTop');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const siteNav = document.getElementById('siteNav');
 
-// Navbar scroll effect
-window.addEventListener('scroll', function() {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+    const updateScrollUI = () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = max > 0 ? (window.scrollY / max) * 100 : 0;
+        if (progress) progress.style.width = `${percent}%`;
+        if (header) header.classList.toggle('scrolled', window.scrollY > 24);
+        if (backToTop) backToTop.classList.toggle('visible', window.scrollY > 450);
+    };
+    window.addEventListener('scroll', updateScrollUI, { passive: true });
+    updateScrollUI();
+
+    if (menuToggle && siteNav) {
+        menuToggle.addEventListener('click', () => {
+            const open = siteNav.classList.toggle('open');
+            menuToggle.setAttribute('aria-expanded', open);
+        });
+        siteNav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => siteNav.classList.remove('open')));
     }
-});
+    if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-// Add CSS for scrolled navbar
-const style = document.createElement('style');
-style.textContent = `
-    .navbar.scrolled {
-        background-color: rgba(13, 110, 253, 0.95) !important;
-        backdrop-filter: blur(10px);
-    }
-`;
-document.head.appendChild(style);
-
-// Animate skill bars on scroll
-function animateSkillBars() {
-    const skillBars = document.querySelectorAll('.progress-bar');
-    const observer = new IntersectionObserver((entries) => {
+    const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const bar = entry.target;
-                const width = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 100);
+                entry.target.classList.add('is-visible');
+                revealObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.5 });
-
-    skillBars.forEach(bar => observer.observe(bar));
-}
-
-// Initialize animations when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    animateSkillBars();
-    
-    // Add fade-in animation to cards
-    const cards = document.querySelectorAll('.card');
-    cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        card.classList.add('fade-in-up');
+    }, { threshold: .12 });
+    document.querySelectorAll('[data-reveal]').forEach((element, index) => {
+        element.style.transitionDelay = `${Math.min(index * 45, 240)}ms`;
+        revealObserver.observe(element);
     });
-});
 
-// Contact form handling
-document.addEventListener('DOMContentLoaded', function() {
-    const contactForm = document.getElementById('contactForm');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showAlert('success', data.message);
-                    contactForm.reset();
-                } else {
-                    showAlert('danger', 'Error sending message. Please try again.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('danger', 'Error sending message. Please try again.');
-            })
-            .finally(() => {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
+    const skillObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.querySelectorAll('[data-width]').forEach(meter => meter.style.width = meter.dataset.width);
+                skillObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: .3 });
+    document.querySelectorAll('.skill-group').forEach(group => skillObserver.observe(group));
+
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('[data-project-tags]');
+    const emptyFilter = document.querySelector('.empty-filter');
+    filterButtons.forEach(button => button.addEventListener('click', () => {
+        filterButtons.forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+        const filter = button.dataset.filter;
+        let visible = 0;
+        projectCards.forEach(card => {
+            const tags = card.dataset.projectTags || '';
+            const show = filter === 'all' || tags.includes(filter);
+            card.style.display = show ? '' : 'none';
+            if (show) visible += 1;
+        });
+        if (emptyFilter) emptyFilter.hidden = visible !== 0;
+    }));
+
+    const form = document.getElementById('contactForm');
+    if (form) {
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
+            const button = document.getElementById('submitBtn');
+            const alertBox = document.getElementById('formAlert');
+            const original = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending...';
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                const data = await response.json();
+                if (!response.ok || !data.success) throw new Error(data.message || 'Please try again.');
+                alertBox.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                form.reset();
+            } catch (error) {
+                alertBox.innerHTML = `<div class="alert alert-warning">${error.message || 'Something went wrong. Please email me directly.'}</div>`;
+            } finally {
+                button.disabled = false;
+                button.innerHTML = original;
+            }
         });
     }
-});
-
-// Alert function
-function showAlert(type, message) {
-    const alertContainer = document.getElementById('alertContainer');
-    if (alertContainer) {
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type} alert-dismissible fade show`;
-        alert.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        alertContainer.appendChild(alert);
-        
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.remove();
-            }
-        }, 5000);
-    }
-}
-
-// Typing effect for hero section
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    
-    type();
-}
-
-// Initialize typing effect if element exists
-document.addEventListener('DOMContentLoaded', function() {
-    const typingElement = document.querySelector('.typing-effect');
-    if (typingElement) {
-        const text = typingElement.textContent;
-        typeWriter(typingElement, text, 100);
-    }
-});
-
-// Back to top button
-const backToTopBtn = document.createElement('button');
-backToTopBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-backToTopBtn.className = 'btn btn-primary btn-floating';
-backToTopBtn.id = 'backToTop';
-backToTopBtn.style.cssText = `
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: none;
-    z-index: 1000;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    transition: all 0.3s ease;
-`;
-
-document.body.appendChild(backToTopBtn);
-
-window.addEventListener('scroll', function() {
-    if (window.scrollY > 300) {
-        backToTopBtn.style.display = 'block';
-    } else {
-        backToTopBtn.style.display = 'none';
-    }
-});
-
-backToTopBtn.addEventListener('click', function() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
 });

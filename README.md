@@ -1,27 +1,44 @@
-# Sartaj Ahamad - Portfolio Website
+# Sartaj Ahamad — Portfolio
 
-A professional portfolio website built with Django, showcasing my skills, projects, and experience as a Software Developer.
+A light, animated Django portfolio for Sartaj Ahamad, focused on Python, Django, APIs, automation, and data tools.
 
-## Features
+## What changed
 
-- **Responsive Design**: Mobile-first approach with Bootstrap
-- **Dynamic Content**: Admin panel for easy content management
-- **Project Showcase**: Display projects with links and technologies
-- **Experience Timeline**: Professional experience with detailed descriptions
-- **Skills Visualization**: Interactive skill bars with proficiency levels
-- **Contact Form**: Ajax-powered contact form with validation
-- **SEO Optimized**: Proper meta tags and semantic HTML
+- A clean light-blue visual system with responsive navigation, animated reveal sections, hover motion, progress meters, project filtering, and an accessible reduced-motion mode.
+- A client-focused home page with clear services, proof points, selected work, experience, and calls to action.
+- A database-free default mode: the public pages use fallback content from `portfolio/views.py`, so the site can run as a free Render web service without provisioning PostgreSQL.
+- Contact form email delivery through SMTP environment variables. Messages are sent to `CONTACT_RECIPIENT`.
 
-## Technologies Used
+## Run locally
 
-- **Backend**: Django 4.2, Python
-- **Frontend**: HTML5, CSS3, JavaScript, Bootstrap 5
-- **Database**: SQLite (Development), PostgreSQL (Production)
-- **Tools**: Git, GitHub
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python manage.py collectstatic --noinput
+python manage.py runserver
+```
 
-## Quick Start
+The portfolio is available at `http://127.0.0.1:8000/`.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/sartaj05/portfolio.git
-   cd portfolio
+## Contact email setup
+
+For Gmail, enable 2-Step Verification and create a Google App Password. Do not use your normal Gmail password. Set these environment variables in your local `.env` file or in Render:
+
+```text
+EMAIL_HOST_USER=your-gmail-address@gmail.com
+EMAIL_HOST_PASSWORD=your-16-character-app-password
+CONTACT_RECIPIENT=sartaj.ahamad0502@gmail.com
+```
+
+If SMTP variables are missing, the form intentionally reports that email delivery is not configured instead of claiming the message was sent.
+
+## Free Render deployment
+
+1. Push this repository to GitHub.
+2. In Render, choose **New → Blueprint** and select the repository.
+3. The included `render.yaml` creates one free web service and no database.
+4. Add `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` as secret environment variables in the Render dashboard.
+5. Deploy. Render runs `build.sh`, collects static files, and starts Gunicorn.
+
+The free Render service may sleep after inactivity, but it is enough for a portfolio site. A custom domain is optional and is usually paid separately by the domain provider.

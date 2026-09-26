@@ -259,12 +259,12 @@ def contact(request):
                 logger.info(f"   Subject: {subject}")
                 logger.info(f"   Message: {message}")
                 
-                success_msg = "Thank you for your message! I'll get back to you soon. (Note: Email is currently in console mode for development)"
+                success_msg = "Email delivery is not configured yet. Please use the direct email link below, or configure SMTP before deploying."
                 
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'success': True, 'message': success_msg})
+                    return JsonResponse({'success': False, 'message': success_msg}, status=503)
                 else:
-                    messages.success(request, success_msg)
+                    messages.warning(request, success_msg)
                     return redirect('contact')
             
             # Compose email
@@ -288,7 +288,7 @@ Sent from Portfolio Contact Form
                 subject=email_subject,
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=['sartaj.ahamad0502@gmail.com'],
+                recipient_list=[settings.CONTACT_RECIPIENT],
                 fail_silently=False,
             )
             

@@ -124,17 +124,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Email Configuration
 # --------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = config("EMAIL_PORT", cast=int, default=587)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=True)
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER or "noreply@example.com")
+CONTACT_RECIPIENT = config("CONTACT_RECIPIENT", default="sartaj.ahamad0502@gmail.com")
 
 # For development/testing without email credentials
 if not EMAIL_HOST_USER or not EMAIL_HOST_PASSWORD:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-    print("⚠️  WARNING: Email credentials not configured. Using console backend for development.")
+    print("WARNING: Email credentials not configured. Using console backend for development.")
 
 # --------------------------------------------------
 # Security Settings (Smart HTTPS Detection)
@@ -163,7 +164,7 @@ if ENABLE_HTTPS:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    print("🔒 HTTPS mode enabled - Secure settings active")
+    print("HTTPS mode enabled - secure settings active")
 else:
     # HTTP only - Development settings
     SECURE_SSL_REDIRECT = False
@@ -173,7 +174,7 @@ else:
     SECURE_BROWSER_XSS_FILTER = True  # Keep this for security
     SECURE_CONTENT_TYPE_NOSNIFF = True  # Keep this for security
     X_FRAME_OPTIONS = "DENY"  # Keep this for security
-    print("🔧 HTTP mode - Running in development (HTTPS redirects disabled)")
+    print("HTTP mode - running in development (HTTPS redirects disabled)")
 
 # --------------------------------------------------
 # Logging Configuration

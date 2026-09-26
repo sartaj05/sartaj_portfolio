@@ -1,548 +1,69 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sartaj Ahamad - Software Developer{% endblock %}</title>
-    
-    {% load static %}
-    
-    <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            color: white;
-            overflow-x: hidden;
-        }
-
-        /* Scroll Progress Indicator */
-        .scroll-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 1001;
-        }
-
-        .scroll-progress {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        /* Glass Morphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-        }
-
-        /* Gradient Text */
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .gradient-text-2 {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Navbar */
-        .navbar {
-            backdrop-filter: blur(20px);
-            background: rgba(10, 10, 10, 0.8) !important;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .navbar.scrolled {
-            background: rgba(10, 10, 10, 0.95) !important;
-            backdrop-filter: blur(30px);
-        }
-
-        .navbar-brand {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-
-        .nav-link {
-            position: relative;
-            transition: all 0.3s ease;
-            margin: 0 0.5rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.8) !important;
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-
-        .nav-link:hover::before,
-        .nav-link.active::before {
-            width: 80%;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            transform: translateY(-2px);
-            color: #667eea !important;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-outline-primary {
-            background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 12px 30px;
-            border-radius: 50px;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .btn-outline-primary:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-            color: white;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        /* Cards */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: rgba(102, 126, 234, 0.3);
-        }
-
-        /* Progress Bars */
-        .progress {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        /* Particles */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            animation: particleFloat 8s linear infinite;
-        }
-
-        @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% {
-                transform: translateY(-10vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Fade Animations */
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(50px);
-        }
-
-        .fade-in-up.animate-in {
-            opacity: 1;
-            transform: translateY(0);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fade-in-scale {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        .fade-in-scale.animate-in {
-            opacity: 1;
-            transform: scale(1);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Footer Links */
-        .footer-link {
-            transition: all 0.3s ease;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 1.2rem;
-            }
-        }
-
-        {% block extra_css %}{% endblock %}
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sartaj Ahamad is a Python and Django developer building reliable APIs, automation tools, and data-focused products.">
+    <meta name="theme-color" content="#eaf7ff">
+    <title>{% block title %}Sartaj Ahamad — Python & Django Developer{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Scroll Progress Indicator -->
-    <div class="scroll-indicator">
-        <div class="scroll-progress" id="scrollProgress"></div>
-    </div>
+    <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
 
-    <!-- Background Particles -->
-    <div class="particles" id="particles"></div>
-
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold gradient-text" href="{% url 'index' %}">
-                <i class="fas fa-code"></i> Sartaj Ahamad
+    <header class="site-header" id="siteHeader">
+        <div class="container nav-wrap">
+            <a class="brand" href="{% url 'index' %}" aria-label="Sartaj Ahamad home">
+                <span class="brand-mark">SA</span>
+                <span>Sartaj <b>Ahamad</b></span>
             </a>
-            
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="box-shadow: none;">
-                <span class="navbar-toggler-icon"></span>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
             </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}">
-                            <i class="fas fa-user"></i> About
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'projects' %}">
-                            <i class="fas fa-folder"></i> Projects
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'experience' %}">
-                            <i class="fas fa-briefcase"></i> Experience
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact' %}">
-                            <i class="fas fa-envelope"></i> Contact
-                        </a>
-                    </li>
-                </ul>
+            <nav class="site-nav" id="siteNav" aria-label="Main navigation">
+                <a class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'index' %}">Home</a>
+                <a class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                <a class="{% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'projects' %}">Work</a>
+                <a class="{% if request.resolver_match.url_name == 'experience' %}active{% endif %}" href="{% url 'experience' %}">Experience</a>
+                <a class="nav-cta {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Let’s talk <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </nav>
+        </div>
+    </header>
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+            <div>
+                <a class="brand footer-brand" href="{% url 'index' %}"><span class="brand-mark">SA</span><span>Sartaj <b>Ahamad</b></span></a>
+                <p class="footer-copy">Backend systems, useful automation, and calm digital experiences built with care.</p>
+            </div>
+            <div class="footer-links">
+                <span class="eyebrow">Explore</span>
+                <a href="{% url 'projects' %}">Selected work</a>
+                <a href="{% url 'about' %}">About me</a>
+                <a href="{% url 'contact' %}">Start a conversation</a>
+            </div>
+            <div class="footer-links">
+                <span class="eyebrow">Connect</span>
+                <a href="mailto:sartaj.ahamad0502@gmail.com">Email me</a>
+                <a href="https://github.com/sartaj05" target="_blank" rel="noreferrer">GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                <a href="https://www.linkedin.com/in/sartaj-ahamad-243234215/" target="_blank" rel="noreferrer">LinkedIn <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
             </div>
         </div>
-    </nav>
-    
-    <!-- Main Content -->
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-    
-    <!-- Footer -->
-    <footer class="mt-5 position-relative">
-        <div class="glass" style="background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <div class="container py-5">
-                <div class="row">
-                    <div class="col-md-6 mb-4">
-                        <div class="footer-brand">
-                            <h5 class="gradient-text fw-bold mb-3">
-                                <i class="fas fa-code"></i> Sartaj Ahamad
-                            </h5>
-                            <p class="text-light mb-3" style="line-height: 1.6;">
-                                Software Developer specializing in Python, Django, and FastAPI. 
-                                Passionate about creating scalable solutions and contributing to innovative projects.
-                            </p>
-                            <div class="glass p-3 rounded-3 d-inline-block">
-                                <small class="text-muted">
-                                    <i class="fas fa-map-marker-alt gradient-text"></i> 
-                                    <span class="ms-1">Based in India</span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-3 mb-4">
-                        <h6 class="gradient-text fw-bold mb-3">Quick Links</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <a href="{% url 'index' %}" class="text-light text-decoration-none footer-link">
-                                    <i class="fas fa-home gradient-text"></i> Home
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="{% url 'about' %}" class="text-light text-decoration-none footer-link">
-                                    <i class="fas fa-user gradient-text"></i> About
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="{% url 'projects' %}" class="text-light text-decoration-none footer-link">
-                                    <i class="fas fa-folder gradient-text"></i> Projects
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="{% url 'experience' %}" class="text-light text-decoration-none footer-link">
-                                    <i class="fas fa-briefcase gradient-text"></i> Experience
-                                </a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="{% url 'contact' %}" class="text-light text-decoration-none footer-link">
-                                    <i class="fas fa-envelope gradient-text"></i> Contact
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="col-md-3 mb-4">
-                        <h6 class="gradient-text fw-bold mb-3">Connect With Me</h6>
-                        <div class="social-links-footer">
-                            <a href="mailto:sartaj.ahamad0502@gmail.com" 
-                               class="glass p-3 rounded-circle d-inline-flex align-items-center justify-content-center me-2 mb-2" 
-                               style="width: 50px; height: 50px; text-decoration: none;">
-                                <i class="fas fa-envelope gradient-text"></i>
-                            </a>
-                            <a href="https://github.com/sartaj05" 
-                               class="glass p-3 rounded-circle d-inline-flex align-items-center justify-content-center me-2 mb-2" 
-                               style="width: 50px; height: 50px; text-decoration: none;" target="_blank">
-                                <i class="fab fa-github gradient-text"></i>
-                            </a>
-                            <a href="https://www.linkedin.com/in/sartaj-ahamad-243234215/" 
-                               class="glass p-3 rounded-circle d-inline-flex align-items-center justify-content-center me-2 mb-2" 
-                               style="width: 50px; height: 50px; text-decoration: none;" target="_blank">
-                                <i class="fab fa-linkedin gradient-text"></i>
-                            </a>
-                            <a href="tel:+918303036084" 
-                               class="glass p-3 rounded-circle d-inline-flex align-items-center justify-content-center me-2 mb-2" 
-                               style="width: 50px; height: 50px; text-decoration: none;">
-                                <i class="fas fa-phone gradient-text"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.1);">
-                
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <p class="mb-0 text-muted">
-                            &copy; {{ current_year|default:"2024" }} Sartaj Ahamad. All rights reserved.
-                        </p>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <p class="mb-0">
-                            <small class="text-muted">
-                                Built with <span class="gradient-text">❤️</span> using Django & Modern Web Technologies
-                            </small>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="container footer-bottom"><span>© {{ current_year|default:"2026" }} Sartaj Ahamad</span><span>Built with Django · Available for thoughtful work</span></div>
     </footer>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Base JavaScript -->
-    <script>
-        // GSAP Plugins
-        gsap.registerPlugin(ScrollTrigger);
 
-        // Scroll Progress Indicator
-        window.addEventListener('scroll', () => {
-            const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-            document.getElementById('scrollProgress').style.width = scrolled + '%';
-        });
-
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Create Particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 50;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 8 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-
-        // Intersection Observer for Animations
-        const animationObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-in');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        // Progress Bar Observer
-        const progressObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const bar = entry.target;
-                    const value = bar.getAttribute('data-value') || bar.getAttribute('aria-valuenow');
-                    if (value) {
-                        setTimeout(() => {
-                            bar.style.width = value + '%';
-                        }, 200);
-                    }
-                }
-            });
-        }, { threshold: 0.5 });
-
-        // Initialize on DOM Load
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPath = window.location.pathname;
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            // Active Navigation
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === currentPath || 
-                    (currentPath === '/' && link.getAttribute('href').includes('/'))) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Initialize Particles
-            createParticles();
-
-            // Observe animated elements
-            document.querySelectorAll('.fade-in-up, .fade-in-scale').forEach(el => {
-                animationObserver.observe(el);
-            });
-
-            // Observe progress bars
-            document.querySelectorAll('.progress-bar').forEach(bar => {
-                bar.style.width = '0%';
-                progressObserver.observe(bar);
-            });
-
-            // Footer link hover effects
-            document.querySelectorAll('.footer-link').forEach(link => {
-                link.addEventListener('mouseenter', () => {
-                    link.style.transform = 'translateX(5px)';
-                    link.style.color = '#667eea';
-                });
-                
-                link.addEventListener('mouseleave', () => {
-                    link.style.transform = 'translateX(0)';
-                    link.style.color = '';
-                });
-            });
-
-            // Social links hover effects
-            document.querySelectorAll('.social-links-footer a').forEach(link => {
-                link.addEventListener('mouseenter', () => {
-                    link.style.transform = 'translateY(-3px) scale(1.1)';
-                    link.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
-                });
-                
-                link.addEventListener('mouseleave', () => {
-                    link.style.transform = '';
-                    link.style.boxShadow = '';
-                });
-            });
-        });
-    </script>
-    
+    <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+    <script src="{% static 'js/script.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
