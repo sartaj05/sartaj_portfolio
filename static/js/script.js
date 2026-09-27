@@ -24,6 +24,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion) {
+        // A quiet cursor spotlight gives the page a sense of depth without adding noise.
+        window.addEventListener('pointermove', event => {
+            document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
+            document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
+        }, { passive: true });
+
+        // Physical-feeling hover depth for the terminal and capability/project cards.
+        document.querySelectorAll('.tilt-card').forEach(card => {
+            card.addEventListener('pointermove', event => {
+                const rect = card.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width - .5;
+                const y = (event.clientY - rect.top) / rect.height - .5;
+                card.style.transform = `perspective(900px) rotateX(${y * -4}deg) rotateY(${x * 5}deg) translateY(-4px)`;
+            });
+            card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+        });
+
+        // Small magnetic pull on primary actions.
+        document.querySelectorAll('.magnetic').forEach(button => {
+            button.addEventListener('pointermove', event => {
+                const rect = button.getBoundingClientRect();
+                const x = event.clientX - rect.left - rect.width / 2;
+                const y = event.clientY - rect.top - rect.height / 2;
+                button.style.transform = `translate(${x * .08}px, ${y * .12}px)`;
+            });
+            button.addEventListener('pointerleave', () => { button.style.transform = ''; });
+        });
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => anchor.addEventListener('click', event => {
+        const target = document.querySelector(anchor.getAttribute('href'));
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+    }));
+
     const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
