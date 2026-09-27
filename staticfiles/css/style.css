@@ -203,3 +203,30 @@ body.portfolio-shell::before { opacity: .5; background-image: linear-gradient(rg
 .form-submit-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 @media (max-width: 900px) { .page-hero-grid { grid-template-columns: 1fr; gap: 35px; }.page-index-card { width: 250px; min-height: 190px; }.lab-about-grid, .lab-contact-grid { grid-template-columns: 1fr; gap: 28px; }.lab-profile-card { max-width: 430px; }.lab-timeline { margin-inline: auto; } }
 @media (max-width: 680px) { .lab-page-hero { min-height: auto; padding: 130px 0 75px; }.lab-page-hero h1 { font-size: clamp(3rem, 14vw, 4.4rem); }.lab-page-hero p { font-size: .98rem; }.page-index-card { width: 210px; min-height: 175px; }.page-index-card strong { font-size: 1.75rem; }.lab-copy h2 { font-size: 2.8rem; }.project-index-bar { padding: 16px 0; }.project-index-bar .filter-row { justify-content: start; margin-top: 18px; }.lab-timeline-item { padding-left: 35px; }.lab-timeline-item .surface { padding: 22px; }.form-submit-row { display: block; }.form-submit-row .btn { margin-top: 18px; } }
+
+/* Additional motion: ambient, responsive, and purposeful. */
+.portfolio-shell main { animation: pageBoot .7s cubic-bezier(.2,.8,.2,1) both; }
+.page-index-card { animation: indexFloat 6s ease-in-out infinite; }
+.project-grid-lab .project-visual .visual-grid { animation: gridDrift 16s linear infinite; }
+.project-grid-lab .project-visual i { animation: iconFloat 4.5s ease-in-out infinite; }
+.project-grid-lab .project-card:nth-child(2) .project-visual i { animation-delay: -.9s; }
+.project-grid-lab .project-card:nth-child(3) .project-visual i { animation-delay: -1.8s; }
+.capability-card::after { content: ''; position: absolute; top: -80%; left: -35%; width: 35%; height: 260%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.48), transparent); transform: rotate(18deg) translateX(-220%); transition: transform .75s ease; pointer-events: none; }
+.capability-card:hover::after { transform: rotate(18deg) translateX(520%); }
+.lab-timeline::before { background-size: 100% 180%; animation: timelineFlow 5s ease-in-out infinite; }
+.lab-timeline-item .timeline-dot { animation: dotPulse 2.8s ease-in-out infinite; }
+.lab-timeline-item:nth-child(2) .timeline-dot { animation-delay: -.9s; }
+.lab-timeline-item:nth-child(3) .timeline-dot { animation-delay: -1.8s; }
+.lab-form-card:focus-within { border-color: var(--blue); box-shadow: 7px 7px 0 var(--lime), 0 0 0 5px rgba(14,134,201,.08); transition: border-color .3s ease, box-shadow .3s ease; }
+.contact-terminal-card { overflow: hidden; }
+.contact-terminal-card::after { content: ''; position: absolute; inset: 0; opacity: .12; pointer-events: none; background: repeating-linear-gradient(0deg, transparent 0 5px, rgba(147,233,255,.3) 6px, transparent 7px); background-size: 100% 14px; animation: scanline 12s linear infinite; }
+.contact-terminal-card { position: relative; }
+.contact-terminal-card > * { position: relative; z-index: 1; }
+@keyframes pageBoot { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes indexFloat { 0%,100% { transform: rotate(2deg) translateY(0); } 50% { transform: rotate(2deg) translateY(-8px); } }
+@keyframes gridDrift { from { transform: translate(0,0); } to { transform: translate(22px,22px); } }
+@keyframes iconFloat { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-7px) rotate(-4deg); } }
+@keyframes timelineFlow { 0%,100% { background-position: 0 0; } 50% { background-position: 0 80%; } }
+@keyframes dotPulse { 0%,100% { box-shadow: 0 0 0 1px #86d6f4, 0 0 0 0 rgba(14,134,201,.25); } 50% { box-shadow: 0 0 0 1px #86d6f4, 0 0 0 7px rgba(14,134,201,0); } }
+@keyframes scanline { to { background-position: 0 100%; } }
+@media (prefers-reduced-motion: reduce) { .portfolio-shell main, .page-index-card, .project-grid-lab .project-visual .visual-grid, .project-grid-lab .project-visual i, .lab-timeline::before, .lab-timeline-item .timeline-dot, .contact-terminal-card::after { animation: none !important; }.capability-card::after { display: none; } }
