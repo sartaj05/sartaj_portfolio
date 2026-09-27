@@ -34,35 +34,36 @@ def _contact_error(request, message, status=400):
 def get_default_skills():
     return {
         'programming': [
-            SimpleNamespace(name='Python', proficiency=85),
-            SimpleNamespace(name='JavaScript', proficiency=75),
-            SimpleNamespace(name='SQL', proficiency=80),
+            SimpleNamespace(name='Python', proficiency=90),
+            SimpleNamespace(name='JavaScript', proficiency=88),
+            SimpleNamespace(name='SQL', proficiency=82),
         ],
         'framework': [
-            SimpleNamespace(name='Django', proficiency=85),
-            SimpleNamespace(name='Django REST Framework', proficiency=80),
-            SimpleNamespace(name='FastAPI', proficiency=70),
-            SimpleNamespace(name='Flask', proficiency=75),
-            SimpleNamespace(name='Streamlit', proficiency=70),
+            SimpleNamespace(name='Django', proficiency=88),
+            SimpleNamespace(name='Django REST Framework', proficiency=85),
+            SimpleNamespace(name='React.js', proficiency=84),
+            SimpleNamespace(name='Flask', proficiency=78),
+            SimpleNamespace(name='FastAPI', proficiency=75),
         ],
         'web': [
-            SimpleNamespace(name='HTML', proficiency=90),
-            SimpleNamespace(name='CSS', proficiency=85),
-            SimpleNamespace(name='Bootstrap', proficiency=80),
+            SimpleNamespace(name='HTML', proficiency=92),
+            SimpleNamespace(name='CSS', proficiency=90),
+            SimpleNamespace(name='JavaScript', proficiency=88),
+            SimpleNamespace(name='React.js', proficiency=84),
         ],
         'database': [
-            SimpleNamespace(name='PostgreSQL', proficiency=75),
+            SimpleNamespace(name='PostgreSQL', proficiency=82),
+            SimpleNamespace(name='MongoDB', proficiency=78),
             SimpleNamespace(name='MySQL', proficiency=70),
-            SimpleNamespace(name='SQLite', proficiency=80),
         ],
         'tools': [
             SimpleNamespace(name='Git', proficiency=85),
             SimpleNamespace(name='Docker', proficiency=65),
             SimpleNamespace(name='JWT Authentication', proficiency=75),
             SimpleNamespace(name='REST APIs', proficiency=85),
-            SimpleNamespace(name='Power BI', proficiency=70),
-            SimpleNamespace(name='Matplotlib', proficiency=75),
-            SimpleNamespace(name='OpenAI API', proficiency=70),
+            SimpleNamespace(name='AI/ML Integration', proficiency=78),
+            SimpleNamespace(name='Chatbot Development', proficiency=78),
+            SimpleNamespace(name='OpenAI API', proficiency=75),
             SimpleNamespace(name='Swagger', proficiency=70),
         ],
     }
@@ -83,6 +84,11 @@ def _project(title, description, technologies, featured=True, github_link='https
 
 def get_default_projects():
     return [
+        _project('IS CRM Platform', 'A current full-stack CRM project focused on organizing customer workflows and making day-to-day business operations easier to manage.', 'React.js, Django, Django REST Framework, PostgreSQL', github_link=''),
+        _project('School Portal', 'A full-stack school portal project bringing essential academic and administrative workflows into one clear digital experience.', 'React.js, Django, Django REST Framework, PostgreSQL', github_link=''),
+        _project('Cafe Management Platform', 'A café project built around practical management workflows, responsive interfaces, and a smoother experience for staff and customers.', 'React.js, Flask, MongoDB', github_link=''),
+        _project('Salon Management Platform', 'A salon project focused on turning service operations into a simple, approachable web experience.', 'React.js, Django, Django REST Framework, PostgreSQL', github_link=''),
+        _project('Chess Platform', 'A chess platform project combining an interactive frontend with a structured backend foundation for an engaging play experience.', 'React.js, Django, Django REST Framework, PostgreSQL', github_link=''),
         _project('Document Image Summary Application', 'Built an AI-based app to extract and summarize text from PDFs/images using Streamlit and OpenAI. Deployed on Streamlit Cloud with support for batch document processing.', 'Python, Streamlit, OpenAI API, PDF Processing, Image Processing'),
         _project('Article Management System', 'Developed an article management backend with role-based access and JWT authentication. Integrated Swagger for interactive API documentation.', 'Django, Django REST Framework, JWT, Swagger, PostgreSQL'),
         _project('Library Management System', 'Designed a library system for book management, member tracking, late-fee calculations, borrowing transactions, and reporting.', 'Python, Flask, SQLite, Matplotlib, Data Visualization'),
@@ -106,7 +112,7 @@ def _experience(company, position, duration, location, description, technologies
 
 def get_default_experiences():
     return [
-        _experience('Createch Software Pvt. Ltd.', 'Jr. Software Engineer', 'Feb 2024 - Present', 'Ministry of Defence (ASDC)', 'Working on enterprise-level solutions using Python, Django, and FastAPI. Contributing to scalable backend applications with a focus on performance and test-driven development.', 'Python, Django, FastAPI, PostgreSQL, Git, Docker'),
+        _experience('Createch Software Pvt. Ltd.', 'Full Stack Developer', 'Feb 2024 - Present · 2+ years', 'Ministry of Defence (ASDC)', 'Building and contributing to full-stack products across React.js, HTML, CSS, JavaScript, Python, Django, Django REST Framework, Flask, and PostgreSQL. Also integrating AI/ML capabilities and chatbot-style experiences where they create real value.', 'React.js, HTML, CSS, JavaScript, Python, Django, Django REST Framework, Flask, PostgreSQL, MongoDB, AI/ML'),
         _experience('Mobiloitte Technologies', 'Software Developer (Python/Django - AI/ML)', 'October 2024 - December 2024', 'Internship', 'Designed scalable backend solutions using Python, Django, and RESTful APIs. Collaborated with front-end teams and implemented secure JWT authentication.', 'Python, Django, REST API, JWT, AI/ML, PostgreSQL'),
     ]
 

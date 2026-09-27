@@ -1,6 +1,6 @@
 # Sartaj Ahamad — Portfolio
 
-A light, animated Django portfolio for Sartaj Ahamad, focused on Python, Django, APIs, automation, and data tools.
+A light, animated portfolio for Sartaj Ahamad, a full-stack developer working with React.js, Django, DRF, Flask, PostgreSQL, MongoDB, AI/ML integrations, and chatbot projects.
 
 ## What changed
 
