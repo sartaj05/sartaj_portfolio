@@ -1,292 +1,170 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.core.mail import send_mail, BadHeaderError
-from django.conf import settings
-from django.http import JsonResponse, HttpResponse
-from django.urls import reverse
-from django.db.utils import OperationalError, ProgrammingError
-from .models import Project, Experience, Skill, Contact
-from collections import defaultdict
 import datetime
 import logging
 import time
+from types import SimpleNamespace
+
+from django.conf import settings
+from django.core.mail import BadHeaderError, send_mail
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
+
+
+def _current_year():
+    return datetime.datetime.now().year
+
+
+def _contact_context(**extra):
+    context = {
+        'current_year': _current_year(),
+        'form_started': int(time.time()),
+    }
+    context.update(extra)
+    return context
 
 
 def _contact_error(request, message, status=400):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         return JsonResponse({'success': False, 'message': message}, status=status)
-    messages.warning(request, message)
-    return redirect('contact')
+    return render(request, 'portfolio/contact.html', _contact_context(form_error=message), status=status)
 
-def get_skills_by_category():
-    """Helper function to organize skills by category"""
-    # Start with defaults
-    skills_by_category = get_default_skills()
-    
-    try:
-        skills = list(Skill.objects.all().order_by('category', 'name'))
-        
-        if skills:
-            # We have database skills, use them instead
-            from collections import defaultdict
-            db_skills = defaultdict(list)
-            for skill in skills:
-                db_skills[skill.category].append(skill)
-            skills_by_category = dict(db_skills)
-    except (OperationalError, ProgrammingError, Exception):
-        pass  # Use default skills
-    
-    return skills_by_category
 
 def get_default_skills():
-    """Return default skills if none exist in database"""
     return {
         'programming': [
-            type('Skill', (), {'name': 'Python', 'proficiency': 85}),
-            type('Skill', (), {'name': 'JavaScript', 'proficiency': 75}),
-            type('Skill', (), {'name': 'SQL', 'proficiency': 80}),
+            SimpleNamespace(name='Python', proficiency=85),
+            SimpleNamespace(name='JavaScript', proficiency=75),
+            SimpleNamespace(name='SQL', proficiency=80),
         ],
         'framework': [
-            type('Skill', (), {'name': 'Django', 'proficiency': 85}),
-            type('Skill', (), {'name': 'Django REST Framework', 'proficiency': 80}),
-            type('Skill', (), {'name': 'FastAPI', 'proficiency': 70}),
-            type('Skill', (), {'name': 'Flask', 'proficiency': 75}),
-            type('Skill', (), {'name': 'Streamlit', 'proficiency': 70}),
+            SimpleNamespace(name='Django', proficiency=85),
+            SimpleNamespace(name='Django REST Framework', proficiency=80),
+            SimpleNamespace(name='FastAPI', proficiency=70),
+            SimpleNamespace(name='Flask', proficiency=75),
+            SimpleNamespace(name='Streamlit', proficiency=70),
         ],
         'web': [
-            type('Skill', (), {'name': 'HTML', 'proficiency': 90}),
-            type('Skill', (), {'name': 'CSS', 'proficiency': 85}),
-            type('Skill', (), {'name': 'Bootstrap', 'proficiency': 80}),
+            SimpleNamespace(name='HTML', proficiency=90),
+            SimpleNamespace(name='CSS', proficiency=85),
+            SimpleNamespace(name='Bootstrap', proficiency=80),
         ],
         'database': [
-            type('Skill', (), {'name': 'PostgreSQL', 'proficiency': 75}),
-            type('Skill', (), {'name': 'MySQL', 'proficiency': 70}),
-            type('Skill', (), {'name': 'SQLite', 'proficiency': 80}),
+            SimpleNamespace(name='PostgreSQL', proficiency=75),
+            SimpleNamespace(name='MySQL', proficiency=70),
+            SimpleNamespace(name='SQLite', proficiency=80),
         ],
         'tools': [
-            type('Skill', (), {'name': 'Git', 'proficiency': 85}),
-            type('Skill', (), {'name': 'Docker', 'proficiency': 65}),
-            type('Skill', (), {'name': 'JWT Authentication', 'proficiency': 75}),
-            type('Skill', (), {'name': 'REST APIs', 'proficiency': 85}),
-            type('Skill', (), {'name': 'Power BI', 'proficiency': 70}),
-            type('Skill', (), {'name': 'Matplotlib', 'proficiency': 75}),
-            type('Skill', (), {'name': 'OpenAI API', 'proficiency': 70}),
-            type('Skill', (), {'name': 'Swagger', 'proficiency': 70}),
-        ]
+            SimpleNamespace(name='Git', proficiency=85),
+            SimpleNamespace(name='Docker', proficiency=65),
+            SimpleNamespace(name='JWT Authentication', proficiency=75),
+            SimpleNamespace(name='REST APIs', proficiency=85),
+            SimpleNamespace(name='Power BI', proficiency=70),
+            SimpleNamespace(name='Matplotlib', proficiency=75),
+            SimpleNamespace(name='OpenAI API', proficiency=70),
+            SimpleNamespace(name='Swagger', proficiency=70),
+        ],
     }
 
+
+def _project(title, description, technologies, featured=True, github_link='https://github.com/sartaj05', live_link=''):
+    return SimpleNamespace(
+        title=title,
+        description=description,
+        technologies=technologies,
+        github_link=github_link,
+        live_link=live_link,
+        is_featured=featured,
+        created_date=datetime.date.today(),
+        tech_list=[item.strip() for item in technologies.split(',') if item.strip()],
+    )
+
+
 def get_default_projects():
-    """Return default projects if none exist in database"""
     return [
-        type('Project', (), {
-            'title': 'Document Image Summary Application',
-            'description': 'Built an AI-based app to extract and summarize text from PDFs/images using Streamlit and OpenAI. Deployed on Streamlit Cloud with support for batch document processing.',
-            'technologies': 'Python, Streamlit, OpenAI API, PDF Processing, Image Processing',
-            'github_link': 'https://github.com/sartaj05',
-            'live_link': '',
-            'is_featured': True,
-            'created_date': datetime.date.today(),
-            'tech_list': ['Python', 'Streamlit', 'OpenAI API', 'PDF Processing', 'Image Processing']
-        }),
-        type('Project', (), {
-            'title': 'Article Management System',
-            'description': 'Developed an article management backend with role-based access and JWT authentication. Integrated Swagger (drf-yasg) for interactive API documentation.',
-            'technologies': 'Django, Django REST Framework, JWT, Swagger, PostgreSQL',
-            'github_link': 'https://github.com/sartaj05',
-            'live_link': '',
-            'is_featured': True,
-            'created_date': datetime.date.today(),
-            'tech_list': ['Django', 'Django REST Framework', 'JWT', 'Swagger', 'PostgreSQL']
-        }),
-        type('Project', (), {
-            'title': 'Library Management System',
-            'description': 'Designed and developed a library system integrating key operations like book management, member tracking, and late fee calculations. Visualized borrowing trends using Matplotlib, enabling insightful reporting for library operations. Implemented robust backend logic to manage borrowing transactions and ensure data integrity.',
-            'technologies': 'Python, Flask, SQLite, Matplotlib, Data Visualization',
-            'github_link': 'https://github.com/sartaj05',
-            'live_link': '',
-            'is_featured': True,
-            'created_date': datetime.date(2024, 9, 1),
-            'tech_list': ['Python', 'Flask', 'SQLite', 'Matplotlib', 'Data Visualization']
-        }),
-        type('Project', (), {
-            'title': 'Power BI Dashboard',
-            'description': 'Developed a dynamic Power BI dashboard to visualize business performance and trends across multiple metrics. Integrated data sources using CSV and performed data transformation and cleaning with Python. Designed interactive reports and insights to assist in decision-making, helping stakeholders identify actionable strategies.',
-            'technologies': 'Power BI, Excel, CSV, Python, Data Analysis',
-            'github_link': 'https://github.com/sartaj05',
-            'live_link': '',
-            'is_featured': True,
-            'created_date': datetime.date(2024, 7, 1),
-            'tech_list': ['Power BI', 'Excel', 'CSV', 'Python', 'Data Analysis']
-        }),
-        type('Project', (), {
-            'title': 'Tweet Application',
-            'description': 'Created a basic Tweet app supporting post creation, editing, and deletion. Set up Django views, templates, and routing for smooth UI interaction.',
-            'technologies': 'Django, Python, SQLite, HTML, CSS, JavaScript',
-            'github_link': 'https://github.com/sartaj05',
-            'live_link': '',
-            'is_featured': False,
-            'created_date': datetime.date(2024, 8, 1),
-            'tech_list': ['Django', 'Python', 'SQLite', 'HTML', 'CSS', 'JavaScript']
-        }),
-        type('Project', (), {
-            'title': 'Portfolio Website',
-            'description': 'A responsive portfolio website built with Django featuring modern UI/UX, contact forms, and dynamic content management with glassmorphism design and smooth animations.',
-            'technologies': 'Python, Django, HTML, CSS, JavaScript, Bootstrap, GSAP',
-            'github_link': 'https://github.com/sartaj05',
-            'live_link': '',
-            'is_featured': False,
-            'created_date': datetime.date.today(),
-            'tech_list': ['Python', 'Django', 'HTML', 'CSS', 'JavaScript', 'Bootstrap', 'GSAP']
-        })
+        _project('Document Image Summary Application', 'Built an AI-based app to extract and summarize text from PDFs/images using Streamlit and OpenAI. Deployed on Streamlit Cloud with support for batch document processing.', 'Python, Streamlit, OpenAI API, PDF Processing, Image Processing'),
+        _project('Article Management System', 'Developed an article management backend with role-based access and JWT authentication. Integrated Swagger for interactive API documentation.', 'Django, Django REST Framework, JWT, Swagger, PostgreSQL'),
+        _project('Library Management System', 'Designed a library system for book management, member tracking, late-fee calculations, borrowing transactions, and reporting.', 'Python, Flask, SQLite, Matplotlib, Data Visualization'),
+        _project('Power BI Dashboard', 'Developed a dynamic dashboard to visualize business performance and trends. Cleaned source data with Python and designed interactive reports for decision-making.', 'Power BI, Excel, CSV, Python, Data Analysis'),
+        _project('Tweet Application', 'Created a basic Tweet app supporting post creation, editing, and deletion with Django views, templates, and routing.', 'Django, Python, SQLite, HTML, CSS, JavaScript', featured=False),
+        _project('Portfolio Website', 'A responsive Django portfolio with modern UI, contact email delivery, SEO metadata, analytics hooks, and smooth animations.', 'Python, Django, HTML, CSS, JavaScript', featured=False),
     ]
+
+
+def _experience(company, position, duration, location, description, technologies):
+    return SimpleNamespace(
+        company=company,
+        position=position,
+        duration=duration,
+        location=location,
+        description=description,
+        technologies=technologies,
+        tech_list=[item.strip() for item in technologies.split(',') if item.strip()],
+    )
+
 
 def get_default_experiences():
-    """Return default experiences if none exist in database"""
     return [
-        type('Experience', (), {
-            'company': 'Createch Software Pvt. Ltd.',
-            'position': 'Jr. Software Engineer',
-            'duration': 'Feb 2024 - Present',
-            'location': 'Ministry of Defence (ASDC)',
-            'description': 'Working on enterprise-level solutions using cutting-edge technologies. Involved in developing scalable backend applications using Python, Django, and FastAPI. Contributing to innovative projects in the defense sector with focus on performance optimization and test-driven development.',
-            'technologies': 'Python, Django, FastAPI, PostgreSQL, Git, Docker',
-            'tech_list': ['Python', 'Django', 'FastAPI', 'PostgreSQL', 'Git', 'Docker']
-        }),
-        type('Experience', (), {
-            'company': 'Mobiloitte Technologies',
-            'position': 'Software Developer (Python/Django - AI/ML)',
-            'duration': 'October 2024 - December 2024',
-            'location': 'Internship',
-            'description': 'Designed and developed scalable backend solutions using Python, Django, and RESTful APIs for web applications. Collaborated with front-end teams to integrate robust APIs and improve application performance. Worked on implementing secure authentication mechanisms using JWT.',
-            'technologies': 'Python, Django, REST API, JWT, AI/ML, PostgreSQL',
-            'tech_list': ['Python', 'Django', 'REST API', 'JWT', 'AI/ML', 'PostgreSQL']
-        })
+        _experience('Createch Software Pvt. Ltd.', 'Jr. Software Engineer', 'Feb 2024 - Present', 'Ministry of Defence (ASDC)', 'Working on enterprise-level solutions using Python, Django, and FastAPI. Contributing to scalable backend applications with a focus on performance and test-driven development.', 'Python, Django, FastAPI, PostgreSQL, Git, Docker'),
+        _experience('Mobiloitte Technologies', 'Software Developer (Python/Django - AI/ML)', 'October 2024 - December 2024', 'Internship', 'Designed scalable backend solutions using Python, Django, and RESTful APIs. Collaborated with front-end teams and implemented secure JWT authentication.', 'Python, Django, REST API, JWT, AI/ML, PostgreSQL'),
     ]
 
+
 def index(request):
-    # Get projects - handle no database case
-    featured_projects = get_default_projects()[:3]
-    try:
-        db_projects = list(Project.objects.filter(is_featured=True)[:3])
-        if db_projects:
-            featured_projects = db_projects
-    except (OperationalError, ProgrammingError, Exception):
-        pass  # Use default projects
-    
-    # Get experience (most recent) - handle no database case
-    recent_experiences = get_default_experiences()
-    recent_experience = recent_experiences[0]
-    try:
-        db_experience = Experience.objects.first()
-        if db_experience:
-            recent_experience = db_experience
-    except (OperationalError, ProgrammingError, Exception):
-        pass  # Use default experience
-    
-    # Get skills
-    skills_by_category = get_skills_by_category()
-    
     context = {
-        'featured_projects': featured_projects,
-        'recent_experience': recent_experience,
-        'skills_by_category': skills_by_category,
-        'current_year': datetime.datetime.now().year,
+        'featured_projects': get_default_projects()[:3],
+        'recent_experience': get_default_experiences()[0],
+        'skills_by_category': get_default_skills(),
+        'current_year': _current_year(),
     }
     return render(request, 'portfolio/index.html', context)
 
+
 def about(request):
-    skills_by_category = get_skills_by_category()
-    
-    context = {
-        'skills_by_category': skills_by_category,
-        'current_year': datetime.datetime.now().year,
-    }
-    return render(request, 'portfolio/about.html', context)
+    return render(request, 'portfolio/about.html', {
+        'skills_by_category': get_default_skills(),
+        'current_year': _current_year(),
+    })
+
 
 def projects(request):
-    # Default projects first
-    all_projects = get_default_projects()
-    
-    try:
-        db_projects = list(Project.objects.all())
-        if db_projects:
-            all_projects = db_projects
-    except (OperationalError, ProgrammingError, Exception):
-        pass  # Use default projects
-    
-    context = {
-        'projects': all_projects,
-        'current_year': datetime.datetime.now().year,
-    }
-    return render(request, 'portfolio/projects.html', context)
+    return render(request, 'portfolio/projects.html', {
+        'projects': get_default_projects(),
+        'current_year': _current_year(),
+    })
+
 
 def experience(request):
-    # Default experiences first
-    experiences = get_default_experiences()
-    
-    try:
-        db_experiences = list(Experience.objects.all().order_by('-order'))
-        if db_experiences:
-            experiences = db_experiences
-    except (OperationalError, ProgrammingError, Exception):
-        pass  # Use default experiences
-    
-    context = {
-        'experiences': experiences,
-        'current_year': datetime.datetime.now().year,
-    }
-    return render(request, 'portfolio/experience.html', context)
+    return render(request, 'portfolio/experience.html', {
+        'experiences': get_default_experiences(),
+        'current_year': _current_year(),
+    })
+
 
 def contact(request):
-    if request.method == 'POST':
-        name = request.POST.get('name', '').strip()
-        email = request.POST.get('email', '').strip()
-        subject = request.POST.get('subject', '').strip()
-        message = request.POST.get('message', '').strip()
+    if request.method != 'POST':
+        return render(request, 'portfolio/contact.html', _contact_context())
 
-        # Lightweight spam protection: reject the hidden honeypot and forms
-        # submitted unrealistically quickly by automated scripts.
-        if request.POST.get('website', '').strip():
-            return _contact_error(request, 'Your message could not be sent. Please try again.')
-        try:
-            form_started = float(request.POST.get('form_started', '0'))
-        except (TypeError, ValueError):
-            form_started = 0
-        if not form_started or time.time() - form_started < 2:
-            return _contact_error(request, 'Please take a moment to review your message and try again.')
+    name = request.POST.get('name', '').strip()
+    email = request.POST.get('email', '').strip()
+    subject = request.POST.get('subject', '').strip()
+    message = request.POST.get('message', '').strip()
 
-        # Validate all fields
-        if not all([name, email, subject, message]):
-            error_msg = 'All fields are required.'
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'message': error_msg})
-            else:
-                messages.error(request, error_msg)
-                return redirect('contact')
+    if request.POST.get('website', '').strip():
+        return _contact_error(request, 'Your message could not be sent. Please try again.')
+    try:
+        form_started = float(request.POST.get('form_started', '0'))
+    except (TypeError, ValueError):
+        form_started = 0
+    if not form_started or time.time() - form_started < 2:
+        return _contact_error(request, 'Please take a moment to review your message and try again.')
+    if not all([name, email, subject, message]):
+        return _contact_error(request, 'All fields are required.')
+    if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
+        return _contact_error(request, 'Email delivery is not configured yet. Please use the direct email link below, or configure SMTP before deploying.', status=503)
 
-        email_sent = False
-        error_occurred = False
-
-        # Try to send email
-        try:
-            # Check if email is properly configured
-            if not settings.EMAIL_HOST_USER or not settings.EMAIL_HOST_PASSWORD:
-                logger.warning("Email credentials not configured in environment variables.")
-                logger.info(f"📧 Contact Form Submission (Email not configured):")
-                logger.info(f"   From: {name} ({email})")
-                logger.info(f"   Subject: {subject}")
-                logger.info(f"   Message: {message}")
-                
-                success_msg = "Email delivery is not configured yet. Please use the direct email link below, or configure SMTP before deploying."
-                
-                return _contact_error(request, success_msg, status=503)
-            
-            # Compose email
-            email_subject = f'Portfolio Contact: {subject}'
-            email_body = f"""
-New contact form submission from your portfolio website:
+    email_body = f'''New contact form submission from your portfolio website:
 
 Name: {name}
 Email: {email}
@@ -297,61 +175,32 @@ Message:
 
 ---
 Sent from Portfolio Contact Form
-"""
-            
-            # Send email
-            send_mail(
-                subject=email_subject,
-                message=email_body,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.CONTACT_RECIPIENT],
-                fail_silently=False,
-            )
-            
-            email_sent = True
-            logger.info(f"✅ Email sent successfully from {name} ({email})")
-            
-        except BadHeaderError:
-            logger.error("Invalid header found when sending email")
-            error_occurred = True
-        except Exception as e:
-            logger.error(f"❌ Failed to send contact email: {str(e)}")
-            error_occurred = True
+'''
+    try:
+        send_mail(
+            subject=f'Portfolio Contact: {subject}',
+            message=email_body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.CONTACT_RECIPIENT],
+            fail_silently=False,
+        )
+    except BadHeaderError:
+        logger.error('Invalid header found when sending contact email')
+        return _contact_error(request, 'Your message could not be sent. Please check the subject and try again.', status=400)
+    except Exception:
+        logger.exception('Failed to send contact email')
+        return _contact_error(request, 'Your message could not be sent right now. Please email me directly.', status=503)
 
-        # Prepare response message
-        if email_sent:
-            success_msg = "Thank you for your message! I'll get back to you soon."
-        elif error_occurred:
-            success_msg = "Your message was received, but there was an issue sending the email notification. I'll still review your message."
-        else:
-            success_msg = "Thank you for your message!"
-
-        # Return response
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({
-                'success': email_sent or not error_occurred,
-                'message': success_msg
-            })
-        else:
-            if email_sent:
-                messages.success(request, success_msg)
-            else:
-                messages.warning(request, success_msg)
-            return redirect('contact')
-
-    # GET request - show form
-    context = {
-        'current_year': datetime.datetime.now().year,
-        'form_started': int(time.time()),
-    }
-    return render(request, 'portfolio/contact.html', context)
+    success_msg = "Thank you for your message! I'll get back to you soon."
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True, 'message': success_msg})
+    return render(request, 'portfolio/contact.html', _contact_context(form_success=success_msg))
 
 
 def robots_txt(request):
     content = '\n'.join([
         'User-agent: *',
         'Allow: /',
-        'Disallow: /admin/',
         f'Sitemap: {settings.SITE_URL}/sitemap.xml',
     ])
     return HttpResponse(content, content_type='text/plain')
@@ -359,9 +208,7 @@ def robots_txt(request):
 
 def sitemap_xml(request):
     page_names = ['index', 'about', 'projects', 'experience', 'contact']
-    urls = []
-    for page_name in page_names:
-        urls.append(f'  <url><loc>{settings.SITE_URL}{reverse(page_name)}</loc></url>')
+    urls = [f'  <url><loc>{settings.SITE_URL}{reverse(name)}</loc></url>' for name in page_names]
     content = '<?xml version="1.0" encoding="UTF-8"?>\n'
     content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     content += '\n'.join(urls)
