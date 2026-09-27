@@ -28,95 +28,43 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, { passive: true });
     }
-    if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reducedMotion) {
-        // A quiet cursor spotlight gives the page a sense of depth without adding noise.
-        window.addEventListener('pointermove', event => {
-            document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
-            document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
-        }, { passive: true });
-
-        // Physical-feeling hover depth for the terminal and capability/project cards.
-        document.querySelectorAll('.tilt-card').forEach(card => {
-            card.addEventListener('pointermove', event => {
-                const rect = card.getBoundingClientRect();
-                const x = (event.clientX - rect.left) / rect.width - .5;
-                const y = (event.clientY - rect.top) / rect.height - .5;
-                card.style.transform = `perspective(900px) rotateX(${y * -4}deg) rotateY(${x * 5}deg) translateY(-4px)`;
-            });
-            card.addEventListener('pointerleave', () => { card.style.transform = ''; });
-        });
-
-        // Small magnetic pull on primary actions.
-        document.querySelectorAll('.magnetic').forEach(button => {
-            button.addEventListener('pointermove', event => {
-                const rect = button.getBoundingClientRect();
-                const x = event.clientX - rect.left - rect.width / 2;
-                const y = event.clientY - rect.top - rect.height / 2;
-                button.style.transform = `translate(${x * .08}px, ${y * .12}px)`;
-            });
-            button.addEventListener('pointerleave', () => { button.style.transform = ''; });
-        });
-    }
+    const scrollBehavior = () => document.documentElement.dataset.motion === 'full' ? 'smooth' : 'auto';
+    if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: scrollBehavior() }));
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => anchor.addEventListener('click', event => {
-        const target = document.querySelector(anchor.getAttribute('href'));
+        const target = document.getElementById(anchor.hash.slice(1));
         if (!target) return;
         event.preventDefault();
-        target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+        if (anchor.classList.contains('skip-link')) {
+            target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+        }
     }));
-
-    const revealElements = document.querySelectorAll('[data-reveal]');
-    revealElements.forEach((element, index) => {
-        element.style.transitionDelay = `${Math.min(index * 45, 240)}ms`;
-    });
-    if ('IntersectionObserver' in window) {
-        const revealObserver = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: .12 });
-        revealElements.forEach(element => revealObserver.observe(element));
-    } else {
-        revealElements.forEach(element => element.classList.add('is-visible'));
-    }
-
-    const skillGroups = document.querySelectorAll('.skill-group');
-    if ('IntersectionObserver' in window) {
-        const skillObserver = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.querySelectorAll('[data-width]').forEach(meter => meter.style.width = meter.dataset.width);
-                    skillObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: .3 });
-        skillGroups.forEach(group => skillObserver.observe(group));
-    } else {
-        skillGroups.forEach(group => group.querySelectorAll('[data-width]').forEach(meter => meter.style.width = meter.dataset.width));
-    }
 
     const filterButtons = document.querySelectorAll('.filter-btn');
     const projectCards = document.querySelectorAll('[data-project-tags]');
     const emptyFilter = document.querySelector('.empty-filter');
     filterButtons.forEach(button => button.addEventListener('click', () => {
+        // Capture positions before the grid changes so the motion layer can animate reflow.
+        document.dispatchEvent(new CustomEvent('portfolio:filter-start'));
         filterButtons.forEach(item => item.classList.remove('active'));
+        filterButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
         button.classList.add('active');
         const filter = button.dataset.filter;
         let visible = 0;
         projectCards.forEach(card => {
             const tags = card.dataset.projectTags || '';
-            const show = filter === 'all' || tags.includes(filter);
+            const show = filter === 'all' || (filter === 'data'
+                ? /data|openai|ai\/ml|chatbot|streamlit/.test(tags)
+                : tags.includes(filter));
             card.style.display = show ? '' : 'none';
             if (show) visible += 1;
         });
         if (emptyFilter) emptyFilter.hidden = visible !== 0;
+        document.dispatchEvent(new CustomEvent('portfolio:filter-end'));
     }));
+    filterButtons.forEach(item => item.setAttribute('aria-pressed', String(item.classList.contains('active'))));
 
     // Optional Plausible custom event: see which project links attract clicks.
     document.querySelectorAll('.project-links a').forEach(link => link.addEventListener('click', () => {

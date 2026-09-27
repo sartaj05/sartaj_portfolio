@@ -23,6 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/motion.css' %}">
     {% if plausible_domain %}<script defer data-domain="{{ plausible_domain }}" src="https://plausible.io/js/script.js"></script>{% endif %}
     {% block extra_css %}{% endblock %}
 </head>
@@ -78,6 +79,11 @@
     </footer>
 
     <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top"><i class="fa-solid fa-arrow-up"></i></button>
+    <button class="motion-toggle" id="motionToggle" type="button" aria-label="Pause animations" aria-pressed="false" hidden>
+        <span class="motion-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span data-motion-label>Motion on</span>
+    </button>
+    <script src="{% static 'js/motion.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
