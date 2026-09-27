@@ -3,5 +3,5 @@
 {% block title %}Page not found — Sartaj Ahamad{% endblock %}
 
 {% block content %}
-<section class="page-hero"><div class="container" data-reveal><span class="eyebrow">404 · Not found</span><h1>This page took a wrong <em>turn.</em></h1><p>The page you’re looking for may have moved, or the link may be incomplete. Let’s get you back to something useful.</p><div class="hero-actions"><a class="btn btn-primary" href="{% url 'index' %}">Back home <i class="fa-solid fa-arrow-right"></i></a><a class="btn btn-secondary" href="{% url 'projects' %}">View my work</a></div></div></section>
+<section class="page-hero lab-page-hero"><div class="container page-hero-grid"><div data-reveal><span class="section-number">404 / SIGNAL LOST</span><h1>This page took a wrong <em>turn.</em></h1><p>The page you’re looking for may have moved, or the link may be incomplete. Let’s get you back to something useful.</p><div class="hero-actions"><a class="btn btn-primary magnetic" href="{% url 'index' %}">Back home <i class="fa-solid fa-arrow-right"></i></a><a class="btn btn-secondary magnetic" href="{% url 'projects' %}">View my work</a></div></div><aside class="page-index-card" data-reveal><span>ERROR / 404</span><strong>NO<br>ROUTE<br>FOUND</strong><small>Try the project index</small></aside></div></section>
 {% endblock %}

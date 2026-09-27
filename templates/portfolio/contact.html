@@ -4,17 +4,23 @@
 {% block extra_css %}<style>.trap-field{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;opacity:0}</style>{% endblock %}
 
 {% block content %}
-<section class="page-hero"><div class="container" data-reveal><span class="eyebrow">Let’s talk</span><h1>Have a project in mind? <em>I’d love to hear it.</em></h1><p>Share a little about what you’re building, where you are stuck, or what you want to explore. I’ll get back to you by email.</p></div></section>
-<section class="section section-soft"><div class="container contact-grid">
-    <aside class="contact-copy surface" data-reveal><span class="section-kicker">Start with a hello</span><h2>Good conversations make better products.</h2><p>Tell me the context, the goal, and what a useful outcome would look like. No pitch deck required.</p><div class="contact-list"><div class="contact-item"><div class="icon-box"><i class="fa-solid fa-envelope"></i></div><div><small>Email</small><a href="mailto:sartaj.ahamad0502@gmail.com">sartaj.ahamad0502@gmail.com</a></div></div><div class="contact-item"><div class="icon-box"><i class="fa-solid fa-phone"></i></div><div><small>Phone</small><a href="tel:+918303036084">+91 8303036084</a></div></div><div class="contact-item"><div class="icon-box"><i class="fa-solid fa-location-dot"></i></div><div><small>Based in</small><span>India · Working remotely</span></div></div></div></aside>
-    <div class="form-card surface" data-reveal><h2>Send a message</h2>{% if form_error %}<div class="alert alert-warning">{{ form_error }}</div>{% endif %}{% if form_success %}<div class="alert alert-success">{{ form_success }}</div>{% endif %}<div id="formAlert" aria-live="polite"></div>
+<section class="page-hero lab-page-hero">
+    <div class="container page-hero-grid">
+        <div data-reveal><span class="section-number">01 / OPEN CHANNEL</span><h1>Bring me the <em>interesting problem.</em></h1><p>Share a little about what you’re building, where you are stuck, or what you want to explore. I’ll get back to you by email.</p></div>
+        <aside class="page-index-card" data-reveal><span>CONTACT / 005</span><strong>HELLO<br>INBOX<br>OPEN</strong><small>Usually replies by email</small></aside>
+    </div>
+</section>
+
+<section class="section section-soft lab-section"><div class="container contact-grid lab-contact-grid">
+    <aside class="contact-copy surface contact-terminal-card" data-reveal><span class="section-number">START WITH A HELLO</span><h2>Good conversations make better products.</h2><p>Tell me the context, the goal, and what a useful outcome would look like. No pitch deck required.</p><div class="contact-list"><div class="contact-item"><div class="icon-box"><i class="fa-solid fa-envelope"></i></div><div><small>Email</small><a href="mailto:sartaj.ahamad0502@gmail.com">sartaj.ahamad0502@gmail.com</a></div></div><div class="contact-item"><div class="icon-box"><i class="fa-solid fa-phone"></i></div><div><small>Phone</small><a href="tel:+918303036084">+91 8303036084</a></div></div><div class="contact-item"><div class="icon-box"><i class="fa-solid fa-location-dot"></i></div><div><small>Based in</small><span>India · Working remotely</span></div></div></div><div class="contact-signal"><i></i><span>AVAILABLE FOR A GOOD BRIEF</span></div></aside>
+    <div class="form-card surface lab-form-card" data-reveal><div class="form-card-heading"><span class="section-number">MESSAGE / NEW</span><h2>Send a message</h2><p>A few useful details help me reply with a useful next step.</p></div>{% if form_error %}<div class="alert alert-warning">{{ form_error }}</div>{% endif %}{% if form_success %}<div class="alert alert-success">{{ form_success }}</div>{% endif %}<div id="formAlert" aria-live="polite"></div>
         <form id="contactForm" method="post" action="{% url 'contact' %}">{% csrf_token %}
             <div class="trap-field" aria-hidden="true"><label for="website">Website</label><input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></div>
             <input type="hidden" name="form_started" value="{{ form_started }}">
             <div class="form-grid"><div class="field"><label for="name">Your name</label><input id="name" type="text" name="name" placeholder="Jane Doe" required></div><div class="field"><label for="email">Email address</label><input id="email" type="email" name="email" placeholder="jane@example.com" required></div></div>
-            <div class="field"><label for="subject">What can I help with?</label><input id="subject" type="text" name="subject" placeholder="A new API, automation tool, or idea" required></div>
+            <div class="field"><label for="subject">What can I help with?</label><input id="subject" type="text" name="subject" placeholder="A new product, API, or AI feature" required></div>
             <div class="field"><label for="message">A few details</label><textarea id="message" name="message" placeholder="Tell me a little about the project, timeline, or challenge..." required></textarea></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap"><span class="form-note"><i class="fa-solid fa-lock"></i> Your details stay private.</span><button class="btn btn-primary" type="submit" id="submitBtn">Send message <i class="fa-solid fa-arrow-right"></i></button></div>
+            <div class="form-submit-row"><span class="form-note"><i class="fa-solid fa-lock"></i> Your details stay private.</span><button class="btn btn-primary magnetic" type="submit" id="submitBtn">Send message <i class="fa-solid fa-arrow-right"></i></button></div>
         </form>
     </div>
 </div></section>

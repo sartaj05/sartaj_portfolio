@@ -3,7 +3,14 @@
 {% block title %}Experience — Sartaj Ahamad{% endblock %}
 
 {% block content %}
-<section class="page-hero"><div class="container" data-reveal><span class="eyebrow">Experience · 2+ years</span><h1>Learning, shipping, and <em>growing.</em></h1><p>Full-stack roles and product work across React.js, Django, DRF, Flask, databases, AI/ML integrations, and chatbot-style experiences.</p></div></section>
-<section class="section section-soft"><div class="container"><div class="timeline">{% for experience in experiences %}<article class="timeline-item" data-reveal><span class="timeline-dot"></span><div class="surface"><div class="timeline-meta"><span><i class="fa-regular fa-calendar"></i>{{ experience.duration }}</span><span><i class="fa-solid fa-location-dot"></i>{{ experience.location }}</span></div><h2>{{ experience.position }}</h2><h3>{{ experience.company }}</h3><p>{{ experience.description }}</p><div class="tag-row">{% for tech in experience.tech_list %}<span class="tag">{{ tech }}</span>{% endfor %}</div></div></article>{% endfor %}</div></div></section>
-<section class="section"><div class="container"><div class="cta-band" data-reveal><div><h2>Let’s make the next chapter count.</h2><p>I’m always open to thoughtful teams and interesting product problems.</p></div><a class="btn" href="{% url 'contact' %}">Say hello <i class="fa-solid fa-arrow-right"></i></a></div></div></section>
+<section class="page-hero lab-page-hero">
+    <div class="container page-hero-grid">
+        <div data-reveal><span class="section-number">01 / EXPERIENCE LOG</span><h1>Learning, shipping, and <em>growing.</em></h1><p>More than 2 years of full-stack product work across React.js, Django, DRF, Flask, databases, AI/ML integrations, and chatbot-style experiences.</p></div>
+        <aside class="page-index-card" data-reveal><span>LOG / 004</span><strong>2+<br>YEARS<br>BUILDING</strong><small>Full-stack · AI · Product</small></aside>
+    </div>
+</section>
+
+<section class="section section-soft lab-section"><div class="container"><div class="section-heading section-heading-lab" data-reveal><div><span class="section-number">02 / THE TIMELINE</span><h2>Experience as a<br><em>working system.</em></h2></div><p>Every role has added another layer: stronger engineering fundamentals, broader product context, and more care for the person using the software.</p></div><div class="timeline lab-timeline">{% for experience in experiences %}<article class="timeline-item lab-timeline-item" data-reveal><span class="timeline-dot"></span><div class="surface"><div class="timeline-meta"><span><i class="fa-regular fa-calendar"></i>{{ experience.duration }}</span><span><i class="fa-solid fa-location-dot"></i>{{ experience.location }}</span></div><h2>{{ experience.position }}</h2><h3>{{ experience.company }}</h3><p>{{ experience.description }}</p><div class="tag-row">{% for tech in experience.tech_list %}<span class="tag">{{ tech }}</span>{% endfor %}</div></div></article>{% endfor %}</div></div></section>
+
+<section class="section"><div class="container"><div class="cta-band cta-lab" data-reveal><div><span class="section-number">03 / NEXT CHAPTER</span><h2>Let’s make the next chapter count.</h2><p>Have a thoughtful team, product, or technical problem in mind?</p></div><a class="btn btn-light magnetic" href="{% url 'contact' %}">Say hello <i class="fa-solid fa-arrow-up-right-from-square"></i></a></div></div></section>
 {% endblock %}
