@@ -230,3 +230,37 @@ body.portfolio-shell::before { opacity: .5; background-image: linear-gradient(rg
 @keyframes dotPulse { 0%,100% { box-shadow: 0 0 0 1px #86d6f4, 0 0 0 0 rgba(14,134,201,.25); } 50% { box-shadow: 0 0 0 1px #86d6f4, 0 0 0 7px rgba(14,134,201,0); } }
 @keyframes scanline { to { background-position: 0 100%; } }
 @media (prefers-reduced-motion: reduce) { .portfolio-shell main, .page-index-card, .project-grid-lab .project-visual .visual-grid, .project-grid-lab .project-visual i, .lab-timeline::before, .lab-timeline-item .timeline-dot, .contact-terminal-card::after { animation: none !important; }.capability-card::after { display: none; } }
+
+/* Narrow-phone safeguards: keep every component readable at 320–480px. */
+img, svg, video, canvas { max-width: 100%; height: auto; }
+.hero-grid > *, .page-hero-grid > *, .lab-about-grid > *, .lab-contact-grid > *, .project-card, .skill-group, .cta-band { min-width: 0; }
+.terminal-command, .project-card h3, .timeline-item h2, .contact-item a, .tag { overflow-wrap: anywhere; }
+.terminal-topbar > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 480px) {
+    .container { width: calc(100% - 28px); }
+    .site-header .container { gap: 12px; }
+    .brand { gap: 8px; font-size: .9rem; }
+    .brand-mark { width: 36px; height: 36px; }
+    .hero-lab h1, .lab-page-hero h1 { font-size: clamp(2.75rem, 14vw, 3.55rem); }
+    .hero-actions .btn, .cta-lab .btn { width: 100%; }
+    .hero-specs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+    .hero-stage { min-height: 350px; }
+    .hero-stage::before { width: 270px; height: 270px; }
+    .hero-stage::after { width: 300px; height: 300px; }
+    .terminal-window { width: 100%; }
+    .terminal-content { padding: 18px 15px 19px; }
+    .terminal-topbar { gap: 8px; padding: 12px 13px; font-size: .58rem; }
+    .terminal-footer { display: grid; gap: 8px; padding-left: 22px; }
+    .orbit-label { padding: 6px 7px; font-size: .54rem; }
+    .orbit-label-one { left: 0; }
+    .orbit-label-two { right: 0; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .section { padding: 78px 0; }
+    .section-heading-lab h2, .lab-copy h2 { font-size: 2.45rem; }
+    .page-index-card { width: min(100%, 210px); }
+    .project-grid-lab .project-visual { min-height: 145px; }
+    .contact-terminal-card, .lab-form-card { padding: 24px; }
+    .form-submit-row .btn { width: 100%; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom span { overflow-wrap: anywhere; }
+}
