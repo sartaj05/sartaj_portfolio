@@ -6,12 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Sartaj Ahamad is a Python and Django developer building reliable APIs, automation tools, and data-focused products.">
     <meta name="theme-color" content="#eaf7ff">
+    <link rel="canonical" href="{{ site_url }}{{ request.path }}">
+    <meta property="og:title" content="{% block og_title %}Sartaj Ahamad — Python & Django Developer{% endblock %}">
+    <meta property="og:description" content="Python, Django, APIs, automation, AI tools, and data products built with care.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ site_url }}{{ request.path }}">
+    <meta property="og:image" content="{{ site_url }}{% static 'images/og-preview.svg' %}">
+    <meta property="og:image:alt" content="Sartaj Ahamad — Python and Django Developer">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sartaj Ahamad — Python & Django Developer">
+    <meta name="twitter:description" content="Reliable backend systems, automation tools, and data-focused products.">
+    <meta name="twitter:image" content="{{ site_url }}{% static 'images/og-preview.svg' %}">
     <title>{% block title %}Sartaj Ahamad — Python & Django Developer{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% if plausible_domain %}<script defer data-domain="{{ plausible_domain }}" src="https://plausible.io/js/script.js"></script>{% endif %}
     {% block extra_css %}{% endblock %}
 </head>
 <body>

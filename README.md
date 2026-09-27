@@ -8,6 +8,10 @@ A light, animated Django portfolio for Sartaj Ahamad, focused on Python, Django,
 - A client-focused home page with clear services, proof points, selected work, experience, and calls to action.
 - A database-free default mode: the public pages use fallback content from `portfolio/views.py`, so the site can run as a free Render web service without provisioning PostgreSQL.
 - Contact form email delivery through SMTP environment variables. Messages are sent to `CONTACT_RECIPIENT`.
+- Lightweight honeypot and minimum-time spam protection on the contact form.
+- SEO essentials: canonical URLs, Open Graph/Twitter preview metadata, an SVG social preview image, `robots.txt`, and `sitemap.xml`.
+- Optional privacy-friendly Plausible analytics, enabled with `PLAUSIBLE_DOMAIN`.
+- A custom branded 404 page for production deployments.
 
 ## Run locally
 
@@ -29,9 +33,13 @@ For Gmail, enable 2-Step Verification and create a Google App Password. Do not u
 EMAIL_HOST_USER=your-gmail-address@gmail.com
 EMAIL_HOST_PASSWORD=your-16-character-app-password
 CONTACT_RECIPIENT=sartaj.ahamad0502@gmail.com
+SITE_URL=https://your-domain.example
+PLAUSIBLE_DOMAIN=your-domain.example
 ```
 
 If SMTP variables are missing, the form intentionally reports that email delivery is not configured instead of claiming the message was sent.
+
+`PLAUSIBLE_DOMAIN` is optional. Leave it blank to keep analytics disabled. If enabled, create the site in Plausible and use the exact public hostname, without `https://`.
 
 ## Free Render deployment
 

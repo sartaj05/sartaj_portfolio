@@ -67,6 +67,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "portfolio.context_processors.site_metadata",
             ],
         },
     },
@@ -105,7 +106,11 @@ STATICFILES_DIRS = [BASE_DIR / "static"] if os.path.exists(BASE_DIR / "static") 
 
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": (
+            "whitenoise.storage.CompressedManifestStaticFilesStorage"
+            if not DEBUG
+            else "whitenoise.storage.CompressedStaticFilesStorage"
+        ),
     },
 }
 
@@ -119,6 +124,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Default Primary Key
 # --------------------------------------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# --------------------------------------------------
+# Public site metadata and optional analytics
+# --------------------------------------------------
+SITE_URL = config("SITE_URL", default="https://sartajportfolio5.onrender.com").rstrip("/")
+PLAUSIBLE_DOMAIN = config("PLAUSIBLE_DOMAIN", default="")
 
 # --------------------------------------------------
 # Email Configuration

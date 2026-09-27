@@ -2,14 +2,23 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.urls import reverse
 from django.db.utils import OperationalError, ProgrammingError
 from .models import Project, Experience, Skill, Contact
 from collections import defaultdict
 import datetime
 import logging
+import time
 
 logger = logging.getLogger(__name__)
+
+
+def _contact_error(request, message, status=400):
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': False, 'message': message}, status=status)
+    messages.warning(request, message)
+    return redirect('contact')
 
 def get_skills_by_category():
     """Helper function to organize skills by category"""
@@ -237,6 +246,17 @@ def contact(request):
         subject = request.POST.get('subject', '').strip()
         message = request.POST.get('message', '').strip()
 
+        # Lightweight spam protection: reject the hidden honeypot and forms
+        # submitted unrealistically quickly by automated scripts.
+        if request.POST.get('website', '').strip():
+            return _contact_error(request, 'Your message could not be sent. Please try again.')
+        try:
+            form_started = float(request.POST.get('form_started', '0'))
+        except (TypeError, ValueError):
+            form_started = 0
+        if not form_started or time.time() - form_started < 2:
+            return _contact_error(request, 'Please take a moment to review your message and try again.')
+
         # Validate all fields
         if not all([name, email, subject, message]):
             error_msg = 'All fields are required.'
@@ -261,11 +281,7 @@ def contact(request):
                 
                 success_msg = "Email delivery is not configured yet. Please use the direct email link below, or configure SMTP before deploying."
                 
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'message': success_msg}, status=503)
-                else:
-                    messages.warning(request, success_msg)
-                    return redirect('contact')
+                return _contact_error(request, success_msg, status=503)
             
             # Compose email
             email_subject = f'Portfolio Contact: {subject}'
@@ -324,5 +340,30 @@ Sent from Portfolio Contact Form
             return redirect('contact')
 
     # GET request - show form
-    context = {'current_year': datetime.datetime.now().year}
+    context = {
+        'current_year': datetime.datetime.now().year,
+        'form_started': int(time.time()),
+    }
     return render(request, 'portfolio/contact.html', context)
+
+
+def robots_txt(request):
+    content = '\n'.join([
+        'User-agent: *',
+        'Allow: /',
+        'Disallow: /admin/',
+        f'Sitemap: {settings.SITE_URL}/sitemap.xml',
+    ])
+    return HttpResponse(content, content_type='text/plain')
+
+
+def sitemap_xml(request):
+    page_names = ['index', 'about', 'projects', 'experience', 'contact']
+    urls = []
+    for page_name in page_names:
+        urls.append(f'  <url><loc>{settings.SITE_URL}{reverse(page_name)}</loc></url>')
+    content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    content += '\n'.join(urls)
+    content += '\n</urlset>\n'
+    return HttpResponse(content, content_type='application/xml')

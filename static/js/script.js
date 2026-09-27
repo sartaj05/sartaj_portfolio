@@ -64,6 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (emptyFilter) emptyFilter.hidden = visible !== 0;
     }));
 
+    // Optional Plausible custom event: see which project links attract clicks.
+    document.querySelectorAll('.project-links a').forEach(link => link.addEventListener('click', () => {
+        if (typeof window.plausible !== 'function') return;
+        const project = link.closest('.project-card')?.querySelector('h3')?.textContent?.trim() || 'Unknown project';
+        window.plausible('Project link click', { props: { project } });
+    }));
+
     const form = document.getElementById('contactForm');
     if (form) {
         form.addEventListener('submit', async event => {
